@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.2">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.1.2">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.1.2">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.2" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="问题重现某不知名springboot小项目，application.properties文件： 1custom.param=中文属性值  java代码： 12345678910111213141516@SpringBootApplicationpublic class Application &amp;#123;    @Value(&quot;$&amp;#123;custom.param&amp;#125;&quot;)    priv">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot使用@Value读取.properties中文乱码及解决方法">
+<meta property="og:url" content="http://eericzeng.github.io/2019/07/12/SpringBoot使用@Value读取.properties中文乱码及解决方法/index.html">
+<meta property="og:site_name" content="EricZeng">
+<meta property="og:description" content="问题重现某不知名springboot小项目，application.properties文件： 1custom.param=中文属性值  java代码： 12345678910111213141516@SpringBootApplicationpublic class Application &amp;#123;    @Value(&quot;$&amp;#123;custom.param&amp;#125;&quot;)    priv">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-13T12:08:17.809Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot使用@Value读取.properties中文乱码及解决方法">
+<meta name="twitter:description" content="问题重现某不知名springboot小项目，application.properties文件： 1custom.param=中文属性值  java代码： 12345678910111213141516@SpringBootApplicationpublic class Application &amp;#123;    @Value(&quot;$&amp;#123;custom.param&amp;#125;&quot;)    priv">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://eericzeng.github.io/2019/07/12/SpringBoot使用@Value读取.properties中文乱码及解决方法/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>SpringBoot使用@Value读取.properties中文乱码及解决方法 | EricZeng</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">EricZeng</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eericzeng.github.io/2019/07/12/SpringBoot使用@Value读取.properties中文乱码及解决方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Eric Zeng">
+      <meta itemprop="description" content="你的才华撑不起你的野心时，请静下心来学习">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EricZeng">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SpringBoot使用@Value读取.properties中文乱码及解决方法
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-12 08:36:45" itemprop="dateCreated datePublished" datetime="2019-07-12T08:36:45+08:00">2019-07-12</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-07-13 20:08:17" itemprop="dateModified" datetime="2019-07-13T20:08:17+08:00">2019-07-13</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="问题重现"><a href="#问题重现" class="headerlink" title="问题重现"></a>问题重现</h2><p>某不知名springboot小项目，application.properties文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">custom.param=中文属性值</span><br></pre></td></tr></table></figure>
+
+<p>java代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;custom.param&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String param;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        SpringApplication.run(Application.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printText</span><span class="params">()</span> <span class="keyword">throws</span> UnsupportedEncodingException </span>&#123;</span><br><span class="line">        System.out.println(param);</span><br><span class="line">        System.out.println(<span class="keyword">new</span> String(param.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>控制台输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ä¸­æå±æ§å¼</span><br><span class="line">中文属性值</span><br></pre></td></tr></table></figure>
+
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>先写结论：用@Value注解读取application.properties文件时，编码默认是ISO-8859-1，所以直接配置中文一定会乱码。注意，配置文件是springboot默认的配置文件application.properties或application-{active}.properties。其他配置文件会在<a href="#原因分析"><strong>原因分析</strong></a>中进行详解，原因分析涉及大量源码解读，如果不想烧脑深入分析的话可以直接跳到<a href="#解决方案"><strong>解决方案</strong></a>一节。</p>
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>写本文时，我查了网上几乎所有关于@Value读取.properties中文乱码的文章。一种思路是修改编码格式；另外一种是利用插件/IDE将中文预先编码，在注入到变量后直接转码为所需要的中文。遇到中文乱码修改编码方式是常规思路，所以第一种思路看似没问题，但是把springboot所有关于encoding的配置参数修改为UTF-8后，中文乱码的问题依然没有解决。</p>
+<h2 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h2><blockquote>
+<p>Spring Boot版本：2.1.1.RELEASE</p>
+</blockquote>
+<ul>
+<li>application.properties采用ISO-8859-1加载</li>
+<li>自定义test.properties可以设置编码格式</li>
+<li>.yml/.yaml默认采用UTF-8加载</li>
+</ul>
+<h3 id="application-properties文件加载"><a href="#application-properties文件加载" class="headerlink" title="application.properties文件加载"></a>application.properties文件加载</h3><p>正如前文所述读取配置文件时，编码出现了问题。追踪一下spring boot是加载默认配置文件的过程，会发现org.springframework.boot.contex.config.ConfigFileApplicationListener类的loadDocuments()方法，源码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> List&lt;Document&gt; <span class="title">loadDocuments</span><span class="params">(PropertySourceLoader loader, String name, Resource resource)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    DocumentsCacheKey cacheKey = <span class="keyword">new</span> DocumentsCacheKey(loader, resource);</span><br><span class="line">    List&lt;Document&gt; documents = <span class="keyword">this</span>.loadDocumentsCache.get(cacheKey);</span><br><span class="line">    <span class="keyword">if</span> (documents == <span class="keyword">null</span>) &#123;</span><br><span class="line">        List&lt;PropertySource&lt;?&gt;&gt; loaded = loader.load(name, resource);</span><br><span class="line">        documents = asDocuments(loaded);</span><br><span class="line">        <span class="keyword">this</span>.loadDocumentsCache.put(cacheKey, documents);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> documents;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>入参loader的类型是PropertySourceLoader，PropertySourceLoader是加载属性文件的接口，其实现有两个类：PropertiesPropertySourceLoader和YamlPropertySourceLoader。loader根据传入参数的实例调用load()方法，此处我们讨论.properties文件，接口声明和properties加载实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*********属性文件加载接口**********/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">PropertySourceLoader</span> </span>&#123;</span><br><span class="line">    String[] getFileExtensions();</span><br><span class="line">    List&lt;PropertySource&lt;?&gt;&gt; load(String name, Resource resource) <span class="keyword">throws</span> IOException;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*********properties文件加载实现**********/</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PropertiesPropertySourceLoader</span> <span class="keyword">implements</span> <span class="title">PropertySourceLoader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String XML_FILE_EXTENSION = <span class="string">".xml"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String[] getFileExtensions() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> String[] &#123; <span class="string">"properties"</span>, <span class="string">"xml"</span> &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> List&lt;PropertySource&lt;?&gt;&gt; load(String name, Resource resource) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        Map&lt;String, ?&gt; properties = loadProperties(resource);</span><br><span class="line">        <span class="keyword">if</span> (properties.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">return</span> Collections.emptyList();</span><br><span class="line">        &#125;</span><br><span class="line">      <span class="keyword">return</span> Collections.singletonList(<span class="keyword">new</span> OriginTrackedMapPropertySource(name, properties));</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@SuppressWarnings</span>(&#123; <span class="string">"unchecked"</span>, <span class="string">"rawtypes"</span> &#125;)</span><br><span class="line">  <span class="keyword">private</span> Map&lt;String, ?&gt; loadProperties(Resource resource) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">      String filename = resource.getFilename();</span><br><span class="line">      <span class="keyword">if</span> (filename != <span class="keyword">null</span> &amp;&amp; filename.endsWith(XML_FILE_EXTENSION)) &#123;</span><br><span class="line">          <span class="keyword">return</span> (Map) PropertiesLoaderUtils.loadProperties(resource);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> OriginTrackedPropertiesLoader(resource).load();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过源码分析PropertiesPropertySourceLoader并不单纯的加载.properties文件，还包含.xml文件（似乎有违单一功能原则，不知道当初这样设计的初衷是啥）。顺着load()方法向下找-&gt;loadProperties(Resource)-&gt;OriginTrackedPropertiesLoader.load()-&gt;OriginTrackedPropertiesLoader.load(boolean)-&gt;OriginTrackedPropertiesLoader$CharacterReader(Resource)。<br>CharacterReader是OriginTrackedPropertiesLoader的内部静态类，而且只有一个构造函数，看看器构造参数就不难发现为啥application.properties是以ISO-8859-1编码加载的了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">CharacterReader</span> <span class="keyword">implements</span> <span class="title">Closeable</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 其他代码省略</span></span><br><span class="line">    CharacterReader(Resource resource) <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">      <span class="keyword">this</span>.reader = <span class="keyword">new</span> LineNumberReader(<span class="keyword">new</span> InputStreamReader(</span><br><span class="line">          resource.getInputStream(), StandardCharsets.ISO_8859_1));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 其他代码省略</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也就是说不论application.properties文件被设置为哪种编码格式，最终还是以ISO-8859-1的编码格式进行加载。</p>
+<h3 id="yml-yaml默认以UTF-8加载"><a href="#yml-yaml默认以UTF-8加载" class="headerlink" title="yml/yaml默认以UTF-8加载"></a>yml/yaml默认以UTF-8加载</h3><p>让我们再看看yml/yaml格式的文件，其加载由PropertySourceLoader接口的另外一个实例YamlPropertySourceLoader实现，即接口方法load()：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;PropertySource&lt;?&gt;&gt; load(String name, Resource resource) <span class="keyword">throws</span> IOException;</span><br></pre></td></tr></table></figure>
+
+<p>追一下load()的底层实现，采用org.yaml.snakeyaml.reader.UnicodeReader的实例对yml/ymal文件进行加载，而UnicodeReader实例对文件的初始化方法init()实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (internalIn2 != <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    Charset encoding;</span><br><span class="line">    <span class="keyword">byte</span> bom[] = <span class="keyword">new</span> <span class="keyword">byte</span>[BOM_SIZE];</span><br><span class="line">    <span class="keyword">int</span> n, unread;</span><br><span class="line">    n = internalIn.read(bom, <span class="number">0</span>, bom.length);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((bom[<span class="number">0</span>] == (<span class="keyword">byte</span>) <span class="number">0xEF</span>) &amp;&amp; (bom[<span class="number">1</span>] == (<span class="keyword">byte</span>) <span class="number">0xBB</span>) &amp;&amp; (bom[<span class="number">2</span>] == (<span class="keyword">byte</span>) <span class="number">0xBF</span>)) &#123;</span><br><span class="line">        encoding = UTF8;</span><br><span class="line">        unread = n - <span class="number">3</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((bom[<span class="number">0</span>] == (<span class="keyword">byte</span>) <span class="number">0xFE</span>) &amp;&amp; (bom[<span class="number">1</span>] == (<span class="keyword">byte</span>) <span class="number">0xFF</span>)) &#123;</span><br><span class="line">        encoding = UTF16BE;</span><br><span class="line">        unread = n - <span class="number">2</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((bom[<span class="number">0</span>] == (<span class="keyword">byte</span>) <span class="number">0xFF</span>) &amp;&amp; (bom[<span class="number">1</span>] == (<span class="keyword">byte</span>) <span class="number">0xFE</span>)) &#123;</span><br><span class="line">        encoding = UTF16LE;</span><br><span class="line">        unread = n - <span class="number">2</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Unicode BOM mark not found, unread all bytes</span></span><br><span class="line">        encoding = UTF8;</span><br><span class="line">        unread = n;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (unread &gt; <span class="number">0</span>)</span><br><span class="line">        internalIn.unread(bom, (n - unread), unread);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Use given encoding</span></span><br><span class="line">    CharsetDecoder decoder = encoding.newDecoder().onUnmappableCharacter(</span><br><span class="line">            CodingErrorAction.REPORT);</span><br><span class="line">    internalIn2 = <span class="keyword">new</span> InputStreamReader(internalIn, decoder);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每次调用read()读文件时都会调用init()方法进行初始化，也就是这个时候确定文件的编码格式。首先读取BOM（Byte Order Mark）文件头信息，如果头信息中有UTF8/UTF16BE/UTF16LE就采用对应的编码，没有或者不是则采用UTF8编码。</p>
+<h3 id="自定义test-properties文件编码"><a href="#自定义test-properties文件编码" class="headerlink" title="自定义test.properties文件编码"></a>自定义test.properties文件编码</h3><p>采用@PropertySource(value=”classpath:test.properties”, encoding=”UTF-8”)方式读取配置文件可按照UTF-8的方式读取编码，而不是ISO-8859-1。@PropertySource配置的加载文件由ConfigurationClassParser.processPropertySource()进行解析，EncodedResource类决定最后由哪种编码格式加载文件，其方法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Reader <span class="title">getReader</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.charset != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> InputStreamReader(<span class="keyword">this</span>.resource.getInputStream(), <span class="keyword">this</span>.charset);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.encoding != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> InputStreamReader(<span class="keyword">this</span>.resource.getInputStream(), <span class="keyword">this</span>.encoding);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> InputStreamReader(<span class="keyword">this</span>.resource.getInputStream());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以，虽然都是.properties文件，但是编码格式却是不一样的。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><ul>
+<li>自定义配置文件</li>
+<li>使用yml/yaml配置文件</li>
+<li>IDE/插件预编码</li>
+</ul>
+<h3 id="自定义配置文件"><a href="#自定义配置文件" class="headerlink" title="自定义配置文件"></a>自定义配置文件</h3><p>通过@PropertySource(value=”classpath:my.properties”, encoding=”UTF-8”)注解配置自定义文件，注意文件名不能是springboot默认的application.properties文件名称。</p>
+<h3 id="使用yml-yaml配置文件"><a href="#使用yml-yaml配置文件" class="headerlink" title="使用yml/yaml配置文件"></a>使用yml/yaml配置文件</h3><p>将yml/yaml文件设置为UTF-8的编码格式，springboot读该文件即采用UTF-8编码。</p>
+<h3 id="IDE-插件预编码"><a href="#IDE-插件预编码" class="headerlink" title="IDE/插件预编码"></a>IDE/插件预编码</h3><p>采用编译器或者插件将配置文件预编码。这种方法我没试过，但是想想也知道这是很反人类的。如果有人感兴趣的话，可以参考一下<a href="https://blog.csdn.net/m0_37995707/article/details/77506184" title="Spring Boot自定义属性以及乱码问题" target="_blank" rel="noopener">这篇博客最后一部分IDEA/eclipse的修改操作</a>。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在配置application.properties时，都是开发比较重要的参数，尽量使用英文，业务相关的中文配置还是不要放到这里。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/12/hello-world/" rel="next" title="Hello World">
+                <i class="fa fa-chevron-left"></i> Hello World
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Eric Zeng">
+            
+              <p class="site-author-name" itemprop="name">Eric Zeng</p>
+              <div class="site-description motion-element" itemprop="description">你的才华撑不起你的野心时，请静下心来学习</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/eericzeng" title="GitHub &rarr; https://github.com/eericzeng" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="mailto:zengguang05@163.com" title="E-Mail &rarr; mailto:zengguang05@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题重现"><span class="nav-number">1.</span> <span class="nav-text">问题重现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结论"><span class="nav-number">2.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">3.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原因分析"><span class="nav-number">4.</span> <span class="nav-text">原因分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#application-properties文件加载"><span class="nav-number">4.1.</span> <span class="nav-text">application.properties文件加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yml-yaml默认以UTF-8加载"><span class="nav-number">4.2.</span> <span class="nav-text">yml/yaml默认以UTF-8加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义test-properties文件编码"><span class="nav-number">4.3.</span> <span class="nav-text">自定义test.properties文件编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决方案"><span class="nav-number">5.</span> <span class="nav-text">解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义配置文件"><span class="nav-number">5.1.</span> <span class="nav-text">自定义配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用yml-yaml配置文件"><span class="nav-number">5.2.</span> <span class="nav-text">使用yml/yaml配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IDE-插件预编码"><span class="nav-number">5.3.</span> <span class="nav-text">IDE/插件预编码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">EricZeng</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.1.2</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.2"></script>
+
+  <script src="/js/motion.js?v=7.1.2"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.1.2"></script>
+
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.2"></script>
+<script src="/js/post-details.js?v=7.1.2"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.2"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
