@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://eericzeng.github.io/"/>
-  <updated>2019-07-14T12:05:36.556Z</updated>
+  <updated>2019-07-14T13:19:44.937Z</updated>
   <id>http://eericzeng.github.io/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>hexo站内搜索</title>
+    <link href="http://eericzeng.github.io/2019/07/14/hexo%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2/"/>
+    <id>http://eericzeng.github.io/2019/07/14/hexo站内搜索/</id>
+    <published>2019-07-14T13:14:58.000Z</published>
+    <updated>2019-07-14T13:19:44.937Z</updated>
+    
+    <content type="html"><![CDATA[<p>安装 hexo-generator-searchdb，在站点的根目录下执行以下命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-searchdb --save</span><br></pre></td></tr></table></figure><p>编辑<strong>站点配置文件</strong>，新增以下内容到任意位置：</p><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">search:</span></span><br><span class="line"><span class="attr">  path:</span> <span class="string">search.xml</span></span><br><span class="line"><span class="attr">  field:</span> <span class="string">post</span></span><br><span class="line"><span class="attr">  format:</span> <span class="string">html</span></span><br><span class="line"><span class="attr">  limit:</span> <span class="number">10000</span></span><br></pre></td></tr></table></figure><p>编辑<strong>主题配置文件</strong>，启用本地搜索功能：</p><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Local search</span></span><br><span class="line"><span class="attr">local_search:</span></span><br><span class="line"><span class="attr">  enable:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure><p>执行如下命令进行本地展示：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure><p>参考<a href="https://theme-next.iissnan.com/third-party-services.html" target="_blank" rel="noopener">next官方说明</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;安装 hexo-generator-searchdb，在站点的根目录下执行以下命令：&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/sp
+      
+    
+    </summary>
+    
+      <category term="hexo" scheme="http://eericzeng.github.io/categories/hexo/"/>
+    
+    
+      <category term="hexo" scheme="http://eericzeng.github.io/tags/hexo/"/>
+    
+      <category term="search" scheme="http://eericzeng.github.io/tags/search/"/>
+    
+      <category term="站内搜索" scheme="http://eericzeng.github.io/tags/%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2/"/>
+    
+  </entry>
   
   <entry>
     <title>hexo博客站点sitemap的使用</title>

@@ -97,18 +97,18 @@
 
 
 
-  <meta name="description" content="启用sitemap功能为了让博文被google或百度检索，需要使用hexo的sitemap功能。修改themes/next/_config.yml： 123456789menu:  home: / || home  #about: /about/ || user  tags: /tags/ || tags  categories: /categories/ || th  archives: /ar">
-<meta name="keywords" content="hexo,sitemap,检索,搜索引擎,google search">
+  <meta name="description" content="安装 hexo-generator-searchdb，在站点的根目录下执行以下命令： 1$ npm install hexo-generator-searchdb --save  编辑站点配置文件，新增以下内容到任意位置： 12345search:  path: search.xml  field: post  format: html  limit: 10000  编辑主题配置文件，启用本地搜索">
+<meta name="keywords" content="hexo,search,站内搜索">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexo博客站点sitemap的使用">
-<meta property="og:url" content="http://eericzeng.github.io/2019/07/14/hexo博客站点sitemap的使用/index.html">
+<meta property="og:title" content="hexo站内搜索">
+<meta property="og:url" content="http://eericzeng.github.io/2019/07/14/hexo站内搜索/index.html">
 <meta property="og:site_name" content="EricZeng">
-<meta property="og:description" content="启用sitemap功能为了让博文被google或百度检索，需要使用hexo的sitemap功能。修改themes/next/_config.yml： 123456789menu:  home: / || home  #about: /about/ || user  tags: /tags/ || tags  categories: /categories/ || th  archives: /ar">
+<meta property="og:description" content="安装 hexo-generator-searchdb，在站点的根目录下执行以下命令： 1$ npm install hexo-generator-searchdb --save  编辑站点配置文件，新增以下内容到任意位置： 12345search:  path: search.xml  field: post  format: html  limit: 10000  编辑主题配置文件，启用本地搜索">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-14T12:05:36.556Z">
+<meta property="og:updated_time" content="2019-07-14T13:19:44.937Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hexo博客站点sitemap的使用">
-<meta name="twitter:description" content="启用sitemap功能为了让博文被google或百度检索，需要使用hexo的sitemap功能。修改themes/next/_config.yml： 123456789menu:  home: / || home  #about: /about/ || user  tags: /tags/ || tags  categories: /categories/ || th  archives: /ar">
+<meta name="twitter:title" content="hexo站内搜索">
+<meta name="twitter:description" content="安装 hexo-generator-searchdb，在站点的根目录下执行以下命令： 1$ npm install hexo-generator-searchdb --save  编辑站点配置文件，新增以下内容到任意位置： 12345search:  path: search.xml  field: post  format: html  limit: 10000  编辑主题配置文件，启用本地搜索">
 
 
 
@@ -118,7 +118,7 @@
 
   
   
-  <link rel="canonical" href="http://eericzeng.github.io/2019/07/14/hexo博客站点sitemap的使用/">
+  <link rel="canonical" href="http://eericzeng.github.io/2019/07/14/hexo站内搜索/">
 
 
 
@@ -128,7 +128,7 @@
   };
 </script>
 
-  <title>hexo博客站点sitemap的使用 | EricZeng</title>
+  <title>hexo站内搜索 | EricZeng</title>
   
 
 
@@ -390,7 +390,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://eericzeng.github.io/2019/07/14/hexo博客站点sitemap的使用/">
+    <link itemprop="mainEntityOfPage" href="http://eericzeng.github.io/2019/07/14/hexo站内搜索/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eric Zeng">
@@ -407,7 +407,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">hexo博客站点sitemap的使用
+          <h1 class="post-title" itemprop="name headline">hexo站内搜索
 
               
             
@@ -433,7 +433,7 @@
                 
               
 
-              <time title="创建时间：2019-07-14 18:48:58 / 修改时间：20:05:36" itemprop="dateCreated datePublished" datetime="2019-07-14T18:48:58+08:00">2019-07-14</time>
+              <time title="创建时间：2019-07-14 21:14:58 / 修改时间：21:19:44" itemprop="dateCreated datePublished" datetime="2019-07-14T21:14:58+08:00">2019-07-14</time>
             
 
             
@@ -490,32 +490,19 @@
       
 
       
-        <h2 id="启用sitemap功能"><a href="#启用sitemap功能" class="headerlink" title="启用sitemap功能"></a>启用sitemap功能</h2><p>为了让博文被google或百度检索，需要使用hexo的sitemap功能。修改themes/next/_config.yml：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line"><span class="attr">  home:</span> <span class="string">/</span> <span class="string">||</span> <span class="string">home</span></span><br><span class="line">  <span class="comment">#about: /about/ || user</span></span><br><span class="line"><span class="attr">  tags:</span> <span class="string">/tags/</span> <span class="string">||</span> <span class="string">tags</span></span><br><span class="line"><span class="attr">  categories:</span> <span class="string">/categories/</span> <span class="string">||</span> <span class="string">th</span></span><br><span class="line"><span class="attr">  archives:</span> <span class="string">/archives/</span> <span class="string">||</span> <span class="string">archive</span></span><br><span class="line">  <span class="comment">#schedule: /schedule/ || calendar</span></span><br><span class="line"><span class="attr">  sitemap:</span> <span class="string">/sitemap.xml</span> <span class="string">||</span> <span class="string">sitemap</span></span><br><span class="line">  <span class="comment">#commonweal: /404/ || heartbeat</span></span><br></pre></td></tr></table></figure>
+        <p>安装 hexo-generator-searchdb，在站点的根目录下执行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-searchdb --save</span><br></pre></td></tr></table></figure>
 
-<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p>切换到hexo根目录下，安装搜索引擎插件，插件根据自己的需要安装其中一个或者都安装：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-generator-sitemap --save</span><br><span class="line">npm install hexo-generator-baidu-sitemap --save</span><br></pre></td></tr></table></figure>
+<p>编辑<strong>站点配置文件</strong>，新增以下内容到任意位置：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">search:</span></span><br><span class="line"><span class="attr">  path:</span> <span class="string">search.xml</span></span><br><span class="line"><span class="attr">  field:</span> <span class="string">post</span></span><br><span class="line"><span class="attr">  format:</span> <span class="string">html</span></span><br><span class="line"><span class="attr">  limit:</span> <span class="number">10000</span></span><br></pre></td></tr></table></figure>
 
-<p>如何此时你跟我一样使用的是next主题，直接执行如下命令即可访问站点地图：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br></pre></td></tr></table></figure>
+<p>编辑<strong>主题配置文件</strong>，启用本地搜索功能：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Local search</span></span><br><span class="line"><span class="attr">local_search:</span></span><br><span class="line"><span class="attr">  enable:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
 
-<p>此时，在public的静态文件根目录中会多出一个sitemap.xml文件，表示谷歌检索的sitemap安装成功。</p>
-<h2 id="谷歌检索"><a href="#谷歌检索" class="headerlink" title="谷歌检索"></a>谷歌检索</h2><h3 id="检测网站是否被检索"><a href="#检测网站是否被检索" class="headerlink" title="检测网站是否被检索"></a>检测网站是否被检索</h3><p>以GitHub Pages为例，新建的GitHub Pages是没有被谷歌检索的。在谷歌搜索栏中输入如下信息进行检索：</p>
-<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">site: xxx.github.io</span><br></pre></td></tr></table></figure>
+<p>执行如下命令进行本地展示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
 
-<p>xxx为你的GitHub账号，如果没有被检索，不会显示hexo中的任何博文，如果有下面的步骤就可以省略了。</p>
-<h3 id="验证站点"><a href="#验证站点" class="headerlink" title="验证站点"></a>验证站点</h3><p>需要谷歌账号，没有的可以申请一个。登录<a href="https://www.google.com/webmasters/tools" target="_blank" rel="noopener">GoogleSearchConsole</a>，点击立即使用，输入需要验证所有权的网站地址，例如本站地址</p>
-<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://eericzeng.github.io</span><br></pre></td></tr></table></figure>
-
-<p>对于hexo博客网站，最好使用<strong>HTML标记</strong>法验证网站所有权，复制Google给的标记内容粘贴到themes/next/layout/_partials/head/head.swig文件meta标签最后面。这里使用的是next主题，其他主题类似。然后生成静态文件并发布：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
-
-<p>回到谷歌搜索控制台继续进行验证，点击<strong>完成</strong>。</p>
-<h3 id="添加sitemap-xml"><a href="#添加sitemap-xml" class="headerlink" title="添加sitemap.xml"></a>添加sitemap.xml</h3><p>打开谷歌控制台选择上一步添加的网站-&gt;<strong>索引</strong>-&gt;<strong>站点地图</strong>，在添加新的站点地图中填入”sitemap.xml”即可，添加成功会在<strong>已提交的站点地图</strong>中显示，过一段时间在<strong>概述</strong>中会显示被索引的情况。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
-<li><a href="https://jactor-sue.github.io/zh-CN/how-blog-on-githubpages-can-be-searched-by-google/" target="_blank" rel="noopener">让Google搜索到搭建在Github Pages上的博客</a></li>
-<li><a href="https://www.jianshu.com/p/9c2d6db2f855" target="_blank" rel="noopener">生成sitemap站点地图</a></li>
-</ol>
+<p>参考<a href="https://theme-next.iissnan.com/third-party-services.html" target="_blank" rel="noopener">next官方说明</a></p>
 
       
     </div>
@@ -544,13 +531,9 @@
           
             <a href="/tags/hexo/" rel="tag"># hexo</a>
           
-            <a href="/tags/sitemap/" rel="tag"># sitemap</a>
+            <a href="/tags/search/" rel="tag"># search</a>
           
-            <a href="/tags/检索/" rel="tag"># 检索</a>
-          
-            <a href="/tags/搜索引擎/" rel="tag"># 搜索引擎</a>
-          
-            <a href="/tags/google-search/" rel="tag"># google search</a>
+            <a href="/tags/站内搜索/" rel="tag"># 站内搜索</a>
           
         </div>
       
@@ -563,8 +546,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/14/hexo博客系统分类和标签的使用/" rel="next" title="hexo博客系统分类和标签的使用">
-                <i class="fa fa-chevron-left"></i> hexo博客系统分类和标签的使用
+              <a href="/2019/07/14/hexo博客站点sitemap的使用/" rel="next" title="hexo博客站点sitemap的使用">
+                <i class="fa fa-chevron-left"></i> hexo博客站点sitemap的使用
               </a>
             
           </div>
@@ -572,10 +555,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/07/14/hexo站内搜索/" rel="prev" title="hexo站内搜索">
-                hexo站内搜索 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -619,17 +598,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <div class="site-overview-wrap sidebar-panel">
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -782,23 +752,6 @@
         </div>
       </div>
 
-      
-      <!--noindex-->
-        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-            
-            
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#启用sitemap功能"><span class="nav-number">1.</span> <span class="nav-text">启用sitemap功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装插件"><span class="nav-number">2.</span> <span class="nav-text">安装插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谷歌检索"><span class="nav-number">3.</span> <span class="nav-text">谷歌检索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#检测网站是否被检索"><span class="nav-number">3.1.</span> <span class="nav-text">检测网站是否被检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#验证站点"><span class="nav-number">3.2.</span> <span class="nav-text">验证站点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加sitemap-xml"><span class="nav-number">3.3.</span> <span class="nav-text">添加sitemap.xml</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
-            
-
-          </div>
-        </div>
-      <!--/noindex-->
       
 
       
