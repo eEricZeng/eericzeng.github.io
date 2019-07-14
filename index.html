@@ -227,6 +227,23 @@
         
         
           
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
           <li class="menu-item menu-item-tags">
 
     
@@ -274,6 +291,23 @@
     <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
 
   </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-sitemap">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/sitemap.xml" rel="section"><i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>站点地图</a>
+
+  </li>
 
       
       
@@ -307,6 +341,176 @@
           <div id="content" class="content">
             
   <section id="posts" class="posts-expand">
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eericzeng.github.io/2019/07/14/hexo博客站点sitemap的使用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Eric Zeng">
+      <meta itemprop="description" content="你的才华撑不起你的野心时，请静下心来学习">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EricZeng">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/14/hexo博客站点sitemap的使用/" class="post-title-link" itemprop="url">hexo博客站点sitemap的使用</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-14 18:48:58 / 修改时间：19:12:58" itemprop="dateCreated datePublished" datetime="2019-07-14T18:48:58+08:00">2019-07-14</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="启用sitemap功能"><a href="#启用sitemap功能" class="headerlink" title="启用sitemap功能"></a>启用sitemap功能</h2><p>为了让博文被google或百度检索，需要使用hexo的sitemap功能。修改theme/next/_config.yml：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line"><span class="attr">  home:</span> <span class="string">/</span> <span class="string">||</span> <span class="string">home</span></span><br><span class="line">  <span class="comment">#about: /about/ || user</span></span><br><span class="line"><span class="attr">  tags:</span> <span class="string">/tags/</span> <span class="string">||</span> <span class="string">tags</span></span><br><span class="line"><span class="attr">  categories:</span> <span class="string">/categories/</span> <span class="string">||</span> <span class="string">th</span></span><br><span class="line"><span class="attr">  archives:</span> <span class="string">/archives/</span> <span class="string">||</span> <span class="string">archive</span></span><br><span class="line">  <span class="comment">#schedule: /schedule/ || calendar</span></span><br><span class="line"><span class="attr">  sitemap:</span> <span class="string">/sitemap.xml</span> <span class="string">||</span> <span class="string">sitemap</span></span><br><span class="line">  <span class="comment">#commonweal: /404/ || heartbeat</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p>切换到hexo根目录下，安装搜索引擎插件，插件根据自己的需要安装其中一个或者都安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-generator-sitemap --save</span><br><span class="line">npm install hexo-generator-baidu-sitemap --save</span><br></pre></td></tr></table></figure>
+
+<p>如何此时你跟我一样使用的是next主题，直接执行如下命令即可访问站点地图：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br></pre></td></tr></table></figure>
+
+<p>此时，在public的静态文件根目录中会多出一个sitemap.xml文件，表示谷歌检索的sitemap安装成功。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
     
       
 
@@ -947,7 +1151,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1011,7 +1215,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">13</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
