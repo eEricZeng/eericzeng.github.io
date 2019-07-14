@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[hexo博客站点sitemap的使用]]></title>
+    <url>%2F2019%2F07%2F14%2Fhexo%E5%8D%9A%E5%AE%A2%E7%AB%99%E7%82%B9sitemap%E7%9A%84%E4%BD%BF%E7%94%A8%2F</url>
+    <content type="text"><![CDATA[启用sitemap功能为了让博文被google或百度检索，需要使用hexo的sitemap功能。修改themes/next/_config.yml： 123456789menu: home: / || home #about: /about/ || user tags: /tags/ || tags categories: /categories/ || th archives: /archives/ || archive #schedule: /schedule/ || calendar sitemap: /sitemap.xml || sitemap #commonweal: /404/ || heartbeat 安装插件切换到hexo根目录下，安装搜索引擎插件，插件根据自己的需要安装其中一个或者都安装： 12npm install hexo-generator-sitemap --savenpm install hexo-generator-baidu-sitemap --save 如何此时你跟我一样使用的是next主题，直接执行如下命令即可访问站点地图： 1hexo g 此时，在public的静态文件根目录中会多出一个sitemap.xml文件，表示谷歌检索的sitemap安装成功。 谷歌检索检测网站是否被检索以GitHub Pages为例，新建的GitHub Pages是没有被谷歌检索的。在谷歌搜索栏中输入如下信息进行检索： 1site: xxx.github.io xxx为你的GitHub账号，如果没有被检索，不会显示hexo中的任何博文，如果有下面的步骤就可以省略了。 验证站点需要谷歌账号，没有的可以申请一个。登录GoogleSearchConsole，点击立即使用，输入需要验证所有权的网站地址，例如本站地址 1https://eericzeng.github.io 对于hexo博客网站，最好使用HTML标记法验证网站所有权，复制Google给的标记内容粘贴到themes/next/layout/_partials/head/head.swig文件meta标签最后面。这里使用的是next主题，其他主题类似。然后生成静态文件并发布： 12hexo ghexo d 回到谷歌搜索控制台继续进行验证，点击完成。 添加sitemap.xml打开谷歌控制台选择上一步添加的网站-&gt;索引-&gt;站点地图，在添加新的站点地图中填入”sitemap.xml”即可，添加成功会在已提交的站点地图中显示，过一段时间在概述中会显示被索引的情况。 参考资料 让Google搜索到搭建在Github Pages上的博客 生成sitemap站点地图]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>sitemap</tag>
+        <tag>检索</tag>
+        <tag>搜索引擎</tag>
+        <tag>google search</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[hexo博客系统分类和标签的使用]]></title>
+    <url>%2F2019%2F07%2F14%2Fhexo%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F%E5%88%86%E7%B1%BB%E5%92%8C%E6%A0%87%E7%AD%BE%E7%9A%84%E4%BD%BF%E7%94%A8%2F</url>
+    <content type="text"><![CDATA[写在前面以next主题为例，修改主题的配置文件themes/next/_config.yml，生效分类和标签： 123456789menu: home: / || home #about: /about/ || user tags: /tags/ || tags categories: /categories/ || th archives: /archives/ || archive #schedule: /schedule/ || calendar # sitemap: /sitemap.xml || sitemap #commonweal: /404/ || heartbeat 新创建的hexo博客没有分类和标签，点击分类或标签会提示”Cannot GET /categories/“和”Cannot GET /tags/“。 分类进入hexo博客所在的根目录，输入如下命令： 1hexo new page categories 成功后提示： 1INFO Created: HEXO_ROOT\source\categories\index.md index.md的内容如下： 1234---title: categoriesdate: 2019-07-14 17:51:10--- 这个index.md可以认为是存放分类的一个文档，只是type不同。修改为如下内容： 12345---title: 分类date: 2019-07-14 17:51:10type: "categories"--- 找到source/_posts路径下的markdown文章，并修改其categories属性。以hexo自带的hexo-world.md为例，文件头修改为： 12345---title: Hello Worlddate: 2019-06-28 22:36:00categories: hexo--- 此时，点击菜单栏中的“分类”，即可看到新建的“hexo”分类。 标签标签创建与分类类似，在控制台中输入如下命令： 12hexo new page tagsINFO Created: HEXO_ROOT\source\tags\index.md tags/index.md内容与分类类似，修改为如下内容： 12345---title: 标签date: 2019-07-14 18:19:31type: "tags"--- 同样在hello-world.md增加标签内容： 12345678---title: Hello Worlddate: 2019-06-28 22:36:00categories: hexotags: - hexo - others---]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>tags</tag>
+        <tag>categories</tag>
+        <tag>next</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SpringBoot使用@Value读取.properties中文乱码及解决方法]]></title>
+    <url>%2F2019%2F06%2F29%2FSpringBoot%E4%BD%BF%E7%94%A8%40Value%E8%AF%BB%E5%8F%96.properties%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%2F</url>
+    <content type="text"><![CDATA[问题重现某不知名springboot小项目，application.properties文件： 1custom.param=中文属性值 java代码： 12345678910111213141516@SpringBootApplicationpublic class Application &#123; @Value("$&#123;custom.param&#125;") private String param; public static void main(String[] args) throws Exception &#123; SpringApplication.run(Application.class, args); &#125; @PostConstruct public void printText() throws UnsupportedEncodingException &#123; System.out.println(param); System.out.println(new String(param.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8)); &#125;&#125; 控制台输出： 12ä¸­æå±æ§å¼中文属性值 结论先写结论：用@Value注解读取application.properties文件时，编码默认是ISO-8859-1，所以直接配置中文一定会乱码。注意，配置文件是springboot默认的配置文件application.properties或application-{active}.properties。其他配置文件会在原因分析中进行详解，原因分析涉及大量源码解读，如果不想烧脑深入分析的话可以直接跳到解决方案一节。 写在前面写本文时，我查了网上几乎所有关于@Value读取.properties中文乱码的文章。一种思路是修改编码格式；另外一种是利用插件/IDE将中文预先编码，在注入到变量后直接转码为所需要的中文。遇到中文乱码修改编码方式是常规思路，所以第一种思路看似没问题，但是把springboot所有关于encoding的配置参数修改为UTF-8后，中文乱码的问题依然没有解决。 原因分析 Spring Boot版本：2.1.1.RELEASE application.properties采用ISO-8859-1加载 自定义test.properties可以设置编码格式 .yml/.yaml默认采用UTF-8加载 application.properties文件加载正如前文所述读取配置文件时，编码出现了问题。追踪一下spring boot是加载默认配置文件的过程，会发现org.springframework.boot.contex.config.ConfigFileApplicationListener类的loadDocuments()方法，源码如下： 12345678910private List&lt;Document&gt; loadDocuments(PropertySourceLoader loader, String name, Resource resource) throws IOException &#123; DocumentsCacheKey cacheKey = new DocumentsCacheKey(loader, resource); List&lt;Document&gt; documents = this.loadDocumentsCache.get(cacheKey); if (documents == null) &#123; List&lt;PropertySource&lt;?&gt;&gt; loaded = loader.load(name, resource); documents = asDocuments(loaded); this.loadDocumentsCache.put(cacheKey, documents); &#125; return documents;&#125; 入参loader的类型是PropertySourceLoader，PropertySourceLoader是加载属性文件的接口，其实现有两个类：PropertiesPropertySourceLoader和YamlPropertySourceLoader。loader根据传入参数的实例调用load()方法，此处我们讨论.properties文件，接口声明和properties加载实现如下： 12345678910111213141516171819202122232425262728293031323334/*********属性文件加载接口**********/public interface PropertySourceLoader &#123; String[] getFileExtensions(); List&lt;PropertySource&lt;?&gt;&gt; load(String name, Resource resource) throws IOException;&#125;/*********properties文件加载实现**********/public class PropertiesPropertySourceLoader implements PropertySourceLoader &#123; private static final String XML_FILE_EXTENSION = ".xml"; @Override public String[] getFileExtensions() &#123; return new String[] &#123; "properties", "xml" &#125;; &#125; @Override public List&lt;PropertySource&lt;?&gt;&gt; load(String name, Resource resource) throws IOException &#123; Map&lt;String, ?&gt; properties = loadProperties(resource); if (properties.isEmpty()) &#123; return Collections.emptyList(); &#125; return Collections.singletonList(new OriginTrackedMapPropertySource(name, properties)); &#125; @SuppressWarnings(&#123; "unchecked", "rawtypes" &#125;) private Map&lt;String, ?&gt; loadProperties(Resource resource) throws IOException &#123; String filename = resource.getFilename(); if (filename != null &amp;&amp; filename.endsWith(XML_FILE_EXTENSION)) &#123; return (Map) PropertiesLoaderUtils.loadProperties(resource); &#125; return new OriginTrackedPropertiesLoader(resource).load(); &#125;&#125; 通过源码分析PropertiesPropertySourceLoader并不单纯的加载.properties文件，还包含.xml文件（似乎有违单一功能原则，不知道当初这样设计的初衷是啥）。顺着load()方法向下找-&gt;loadProperties(Resource)-&gt;OriginTrackedPropertiesLoader.load()-&gt;OriginTrackedPropertiesLoader.load(boolean)-&gt;OriginTrackedPropertiesLoader$CharacterReader(Resource)。CharacterReader是OriginTrackedPropertiesLoader的内部静态类，而且只有一个构造函数，看看器构造参数就不难发现为啥application.properties是以ISO-8859-1编码加载的了： 12345678private static class CharacterReader implements Closeable &#123; // 其他代码省略 CharacterReader(Resource resource) throws IOException &#123; this.reader = new LineNumberReader(new InputStreamReader( resource.getInputStream(), StandardCharsets.ISO_8859_1)); &#125; // 其他代码省略&#125; 也就是说不论application.properties文件被设置为哪种编码格式，最终还是以ISO-8859-1的编码格式进行加载。 yml/yaml默认以UTF-8加载让我们再看看yml/yaml格式的文件，其加载由PropertySourceLoader接口的另外一个实例YamlPropertySourceLoader实现，即接口方法load()： 1List&lt;PropertySource&lt;?&gt;&gt; load(String name, Resource resource) throws IOException; 追一下load()的底层实现，采用org.yaml.snakeyaml.reader.UnicodeReader的实例对yml/ymal文件进行加载，而UnicodeReader实例对文件的初始化方法init()实现如下： 1234567891011121314151617181920212223242526272829303132protected void init() throws IOException &#123; if (internalIn2 != null) return; Charset encoding; byte bom[] = new byte[BOM_SIZE]; int n, unread; n = internalIn.read(bom, 0, bom.length); if ((bom[0] == (byte) 0xEF) &amp;&amp; (bom[1] == (byte) 0xBB) &amp;&amp; (bom[2] == (byte) 0xBF)) &#123; encoding = UTF8; unread = n - 3; &#125; else if ((bom[0] == (byte) 0xFE) &amp;&amp; (bom[1] == (byte) 0xFF)) &#123; encoding = UTF16BE; unread = n - 2; &#125; else if ((bom[0] == (byte) 0xFF) &amp;&amp; (bom[1] == (byte) 0xFE)) &#123; encoding = UTF16LE; unread = n - 2; &#125; else &#123; // Unicode BOM mark not found, unread all bytes encoding = UTF8; unread = n; &#125; if (unread &gt; 0) internalIn.unread(bom, (n - unread), unread); // Use given encoding CharsetDecoder decoder = encoding.newDecoder().onUnmappableCharacter( CodingErrorAction.REPORT); internalIn2 = new InputStreamReader(internalIn, decoder);&#125; 每次调用read()读文件时都会调用init()方法进行初始化，也就是这个时候确定文件的编码格式。首先读取BOM（Byte Order Mark）文件头信息，如果头信息中有UTF8/UTF16BE/UTF16LE就采用对应的编码，没有或者不是则采用UTF8编码。 自定义test.properties文件编码采用@PropertySource(value=”classpath:test.properties”, encoding=”UTF-8”)方式读取配置文件可按照UTF-8的方式读取编码，而不是ISO-8859-1。@PropertySource配置的加载文件由ConfigurationClassParser.processPropertySource()进行解析，EncodedResource类决定最后由哪种编码格式加载文件，其方法如下： 1234567891011public Reader getReader() throws IOException &#123; if (this.charset != null) &#123; return new InputStreamReader(this.resource.getInputStream(), this.charset); &#125; else if (this.encoding != null) &#123; return new InputStreamReader(this.resource.getInputStream(), this.encoding); &#125; else &#123; return new InputStreamReader(this.resource.getInputStream()); &#125; &#125; 所以，虽然都是.properties文件，但是编码格式却是不一样的。 解决方案 自定义配置文件 使用yml/yaml配置文件 IDE/插件预编码 自定义配置文件通过@PropertySource(value=”classpath:my.properties”, encoding=”UTF-8”)注解配置自定义文件，注意文件名不能是springboot默认的application.properties文件名称。 使用yml/yaml配置文件将yml/yaml文件设置为UTF-8的编码格式，springboot读该文件即采用UTF-8编码。 IDE/插件预编码采用编译器或者插件将配置文件预编码。这种方法我没试过，但是想想也知道这是很反人类的。如果有人感兴趣的话，可以参考一下这篇博客最后一部分IDEA/eclipse的修改操作。 总结在配置application.properties时，都是开发比较重要的参数，尽量使用英文，业务相关的中文配置还是不要放到这里。]]></content>
+      <categories>
+        <category>SpringBoot</category>
+      </categories>
+      <tags>
+        <tag>SpringBoot</tag>
+        <tag>@Value</tag>
+        <tag>properties</tag>
+        <tag>utf-8</tag>
+        <tag>编码</tag>
+        <tag>乱码</tag>
+        <tag>yaml</tag>
+        <tag>yml</tag>
+        <tag>spring</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Hello World]]></title>
+    <url>%2F2019%2F06%2F28%2Fhello-world%2F</url>
+    <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+</search>
