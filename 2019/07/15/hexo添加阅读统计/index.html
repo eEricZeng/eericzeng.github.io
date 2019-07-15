@@ -476,6 +476,19 @@
           
             
             
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/07/15/hexo添加阅读统计/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count gitment-comments-count" data-xid="/2019/07/15/hexo添加阅读统计/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -599,6 +612,13 @@
           
 
   
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
 
 
 
@@ -684,6 +704,12 @@
                     
                   
                     
+                    
+                      
+                    
+                      
+                    
+                      
                     
                       
                     
@@ -980,6 +1006,40 @@
 
   
 
+
+  
+    <!-- LOCAL: You can save these files to your site and update links -->
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/gitmint.browser.js"></script>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/theme-next/theme-next-gitment@1/default.css">
+<!-- END LOCAL -->
+
+<script>
+  function renderGitment() {
+    var gitment = new Gitmint({
+      id: window.location.pathname,
+      owner: 'eEricZeng',
+      repo: 'gitment',
+      
+        lang: '' || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+      
+      oauth: {
+      
+      
+        client_secret: '195ecf858f5a5e0d568b65a508b069972b5bb754',
+      
+        client_id: '37f2d56a75061f7a9396'
+      }
+    });
+    gitment.render('gitment-container');
+  }
+
+  
+    renderGitment();
+  
+</script>
 
   
 
