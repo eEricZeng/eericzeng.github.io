@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[hexo添加阅读统计]]></title>
+    <url>%2F2019%2F07%2F15%2Fhexo%E6%B7%BB%E5%8A%A0%E9%98%85%E8%AF%BB%E7%BB%9F%E8%AE%A1%2F</url>
+    <content type="text"><![CDATA[打开百度统计，登录并进入网站列表，点击新增网站。以我的GitPage为例，填写新增网站表单，添加必要字段网站域名：eericzeng.github.io，网站首页：https://eericzeng.github.io， 网站名称 、行业类别选填。点击“确定”后，会出现包含如下信息的提示： 123456789&lt;script&gt;var _hmt = _hmt || [];(function() &#123; var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?324a1c41343d123482f031976f9"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s);&#125;)();&lt;/script&gt; 复制”https://hm.baidu.com/hm.js?&quot; 后面的Id字符串，粘贴到主题配置文件中，如themes/next/_config.yml 12# Baidu Analytics IDbaidu_analytics: 324a1c41343d123482f031976f9 重新打包静态文件并发布： 12hexo ghexo s 点击百度统计控制台，代码管理-&gt;代码安装检查进行安装校验。]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+        <tag>阅读统计</tag>
+        <tag>百度统计</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[hexo站内搜索]]></title>
     <url>%2F2019%2F07%2F14%2Fhexo%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2%2F</url>
     <content type="text"><![CDATA[安装 hexo-generator-searchdb，在站点的根目录下执行以下命令： 1$ npm install hexo-generator-searchdb --save 编辑站点配置文件，新增以下内容到任意位置： 12345search: path: search.xml field: post format: html limit: 10000 编辑主题配置文件，启用本地搜索功能： 123# Local searchlocal_search: enable: true 执行如下命令进行本地展示： 12hexo ghexo s 参考next官方说明]]></content>
