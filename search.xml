@@ -3,7 +3,7 @@
   <entry>
     <title><![CDATA[hexo添加阅读统计]]></title>
     <url>%2F2019%2F07%2F15%2Fhexo%E6%B7%BB%E5%8A%A0%E9%98%85%E8%AF%BB%E7%BB%9F%E8%AE%A1%2F</url>
-    <content type="text"><![CDATA[打开百度统计，登录并进入网站列表，点击新增网站。以我的GitPage为例，填写新增网站表单，添加必要字段网站域名：eericzeng.github.io，网站首页：https://eericzeng.github.io， 网站名称 、行业类别选填。点击“确定”后，会出现包含如下信息的提示： 123456789&lt;script&gt;var _hmt = _hmt || [];(function() &#123; var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?324a1c41343d123482f031976f9"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s);&#125;)();&lt;/script&gt; 复制”https://hm.baidu.com/hm.js?&quot; 后面的Id字符串，粘贴到主题配置文件中，如themes/next/_config.yml 12# Baidu Analytics IDbaidu_analytics: 324a1c41343d123482f031976f9 重新打包静态文件并发布： 12hexo ghexo s 点击百度统计控制台，代码管理-&gt;代码安装检查进行安装校验。]]></content>
+    <content type="text"><![CDATA[百度统计打开百度统计，登录并进入网站列表，点击新增网站。以我的GitPage为例，填写新增网站表单，添加必要字段网站域名：eericzeng.github.io，网站首页：https://eericzeng.github.io， 网站名称 、行业类别选填。点击“确定”后，会出现包含如下信息的提示： 123456789&lt;script&gt;var _hmt = _hmt || [];(function() &#123; var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?324a1c41343d123482f031976f9"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s);&#125;)();&lt;/script&gt; 复制”https://hm.baidu.com/hm.js?&quot; 后面的Id字符串，粘贴到主题配置文件中，如themes/next/_config.yml 12# Baidu Analytics IDbaidu_analytics: 324a1c41343d123482f031976f9 显示统计打开主题配置themes/next/_config.xml，并修改不蒜子统计功能： 12busuanzi_count: enable: true 发布重新打包静态文件并发布： 12hexo ghexo s 点击百度统计控制台，代码管理-&gt;代码安装检查进行安装校验。]]></content>
       <categories>
         <category>hexo</category>
       </categories>
