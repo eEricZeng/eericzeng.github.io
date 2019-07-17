@@ -26,6 +26,9 @@
 
 
 
+  <meta http-equiv="Cache-Control" content="no-transform">
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+
 
 
   <meta name="google-site-verification" content="rd59riMJsxTWvGAXBUwKlyom-K2fgNMQPWwZlX7uPh4">
@@ -417,11 +420,11 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">SpringBoot使用@Value读取.properties中文乱码及解决方法
+          <h2 class="post-title" itemprop="name headline">SpringBoot使用@Value读取.properties中文乱码及解决方法
 
               
             
-          </h1>
+          </h2>
         
 
         <div class="post-meta">
@@ -679,6 +682,10 @@
 
           </div>
           
+
+  
+    <div class="comments" id="gitalk-container">
+    </div>
 
   
 
@@ -987,6 +994,8 @@
       <div class="back-to-top">
         <i class="fa fa-arrow-up"></i>
         
+          <span id="scrollpercent"><span>0</span>%</span>
+        
       </div>
     
 
@@ -1071,6 +1080,9 @@
 
 
   
+  <script src="/js/js.cookie.js?v=7.2.0"></script>
+  <script src="/js/scroll-cookie.js?v=7.2.0"></script>
+
 
   
 
@@ -1078,6 +1090,35 @@
 
   
 
+
+  
+    
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+
+
+<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: '37f2d56a75061f7a9396',
+    clientSecret: '195ecf858f5a5e0d568b65a508b069972b5bb754',
+    repo: 'gitalk',
+    owner: 'eEricZeng',
+    admin: [''],
+    id: md5(location.pathname),
+    
+      language: window.navigator.language || window.navigator.userLanguage,
+    
+    distractionFreeMode: 'true'
+  });
+  gitalk.render('gitalk-container');
+</script>
 
   
 
@@ -1418,6 +1459,16 @@
   
 
   
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
 
   
 
