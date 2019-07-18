@@ -22,6 +22,10 @@
 <meta name="theme-color" content="#222">
 
 
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
 
 
 
@@ -38,6 +42,8 @@
 
 
 
+
+  <meta name="baidu-site-verification" content="sLpD1bfdYm">
 
 
 
@@ -617,6 +623,27 @@
 
       
       
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+            
+              <div id="needsharebutton-postbottom">
+                <span class="btn">
+                  <i class="fa fa-share-alt" aria-hidden="true"></i>
+                </span>
+              </div>
+            
+            
+          </div>
+        
+        </div>
+      
       
 
       
@@ -1084,7 +1111,7 @@
     clientSecret: '195ecf858f5a5e0d568b65a508b069972b5bb754',
     repo: 'gitalk',
     owner: 'eEricZeng',
-    admin: [''],
+    admin: ['eEricZeng'],
     id: md5(location.pathname),
     
       language: window.navigator.language || window.navigator.userLanguage,
@@ -1447,6 +1474,26 @@
   
 
   
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+  <script>
+    
+      pbOptions = {};
+      
+        pbOptions.iconStyle = "default";
+      
+        pbOptions.boxForm = "horizontal";
+      
+        pbOptions.position = "bottomCenter";
+      
+        pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Linkedin";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+  </script>
+
 
   
 
