@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://eericzeng.github.io/"/>
-  <updated>2019-07-20T06:57:47.869Z</updated>
+  <updated>2019-07-22T05:09:26.984Z</updated>
   <id>http://eericzeng.github.io/</id>
   
   <author>
@@ -17,25 +17,57 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Github上fork项目更新</title>
+    <link href="http://eericzeng.github.io/2019/07/22/Github%E4%B8%8Afork%E9%A1%B9%E7%9B%AE%E6%9B%B4%E6%96%B0/"/>
+    <id>http://eericzeng.github.io/2019/07/22/Github上fork项目更新/</id>
+    <published>2019-07-22T05:07:40.000Z</published>
+    <updated>2019-07-22T05:09:26.984Z</updated>
+    
+    <content type="html"><![CDATA[<p>场景：很早之前fork了github/gitee/gitlab等等的项目，但是项目经过多次迭代提交了更多更新，而自己账号下面被fork过来的项目并没有及时更新。此时，需要把提交过的内容更新到自己账号下的远程分支上。以我自己fork过的一个项目为例，主要分添加上游仓库和同步两个步骤。</p><h2 id="添加上游仓库"><a href="#添加上游仓库" class="headerlink" title="添加上游仓库"></a>添加上游仓库</h2><p>查看远程分支状态：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remove -v</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190722112159.png" alt="git remote -v"><br>添加需要同步的上游仓库：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add upstream https://github.com/tywo45/t-io</span><br></pre></td></tr></table></figure><p>再次查看远程状态：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ git remote -v</span><br><span class="line">origin  git@github.com:eEricZeng/t-io.git (fetch)</span><br><span class="line">origin  git@github.com:eEricZeng/t-io.git (push)</span><br><span class="line">upstream        https://github.com/tywo45/t-io (fetch)</span><br><span class="line">upstream        https://github.com/tywo45/t-io (push)</span><br></pre></td></tr></table></figure><h2 id="同步"><a href="#同步" class="headerlink" title="同步"></a>同步</h2><p>将上游仓库内容拉到本地：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch upstream</span><br></pre></td></tr></table></figure><p>此时，并没有将上游仓库的内容合并到本地中，可以使用status查看，也可以对比更新：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git diff master upstream/master --<span class="built_in">stat</span></span><br></pre></td></tr></table></figure><p>若要同步哪个分支就切换到对应的分支，例如master分支：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout master</span><br></pre></td></tr></table></figure><p>同步并推送到自己账号下的远程分支，这里的同步本质是把upstream中master分支的内容合并到当前的master分支中：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git merge upstream/master</span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;场景：很早之前fork了github/gitee/gitlab等等的项目，但是项目经过多次迭代提交了更多更新，而自己账号下面被fork过来的项目并没有及时更新。此时，需要把提交过的内容更新到自己账号下的远程分支上。以我自己fork过的一个项目为例，主要分添加上游仓库和同步两
+      
+    
+    </summary>
+    
+      <category term="git" scheme="http://eericzeng.github.io/categories/git/"/>
+    
+    
+      <category term="git" scheme="http://eericzeng.github.io/tags/git/"/>
+    
+      <category term="github" scheme="http://eericzeng.github.io/tags/github/"/>
+    
+      <category term="fork" scheme="http://eericzeng.github.io/tags/fork/"/>
+    
+  </entry>
+  
+  <entry>
     <title>PicGo搭建Github图床</title>
     <link href="http://eericzeng.github.io/2019/07/20/PicGo%E6%90%AD%E5%BB%BAGithub%E5%9B%BE%E5%BA%8A/"/>
     <id>http://eericzeng.github.io/2019/07/20/PicGo搭建Github图床/</id>
     <published>2019-07-20T06:52:50.000Z</published>
-    <updated>2019-07-20T06:57:47.869Z</updated>
+    <updated>2019-07-20T08:24:01.730Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="版本说明"><a href="#版本说明" class="headerlink" title="版本说明"></a>版本说明</h2><ul><li>hexo v3.9.0</li><li>node.js v6.4.1</li><li>PigGo v2.1.2</li></ul><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>安装PicGo需要node.js环境，没有的看<a href="https://nodejs.org/en/" title="node.js" target="_blank" rel="noopener">这里</a>。<a href="https://github.com/Molunerfinn/picgo/releases" target="_blank" rel="noopener">下载</a>PicGo最新版本安装包，根据操作系统下载相应的安装包，以Windows为例，在Assets中点击picgo-setup-2.1.2.exe下载。本地双机安装到指定的目录。安装完成如下图所示：<br><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190720125229.png" alt></p><h2 id="GitHub图床"><a href="#GitHub图床" class="headerlink" title="GitHub图床"></a>GitHub图床</h2><p>PicGo支持SM.MS图床、腾讯云COS、微博图床、GitHub图床、七牛图床、Imgur图床、阿里云OSS、又拍云等各种图床。各家图床各有利弊，但是最好找一个稳定靠谱点的。虽然不是每一个都研究过，但是也是耳闻一些消息。像微博图床2019/4添加了防盗链，微博图床的老粉几多欢喜几多愁；CDN加速？薅羊毛还是要还的。个人独钟GitHub（主要是免费），当然哪天GitHub不能访问了就告别代码吧。</p><p>GitHub图床设置还是蛮简单的，<a href="https://picgo.github.io/PicGo-Doc/zh/guide/config.html#github%E5%9B%BE%E5%BA%8A" target="_blank" rel="noopener">PicGo官网配置说明</a>。Windows点击右下角PicGo小图标打开软件，依次点击<strong>图床设置</strong>-&gt;<strong>GitHub图床</strong>，需要配置的有以下三个必须参数：</p><ul><li>仓库名</li><li>分支名</li><li>token</li></ul><p>仓库名要带github用户名的，如我的配置：<strong>eEricZeng/imgbed</strong>。分支名无特殊需求使用master即可。token稍微麻烦一点，需要<strong>登录GitHub</strong>-&gt;<strong>Settings</strong>-&gt;<strong>Developer settings</strong>-&gt;<strong>Personal access tokens</strong>-&gt;<strong>Generate new token</strong>，之后添加<strong>Note</strong>描述，勾选scopes中的repo（包含repo:status、repo_deployment、public_repo、repo:invite四项），点击<strong>Generate token</strong>生成token，复制到PicGo的token表单中，点击确定即可。返回到上传取即可体验PicGo。<br><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190720144537.png" alt></p><p><a href="https://eericzeng.github.io"><strong>更多更新</strong></a></p><h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol><li><a href="https://molunerfinn.com/PicGo/" target="_blank" rel="noopener">PicGo官网</a></li><li><a href="https://blog.rxliuli.com/p/6138bec/" target="_blank" rel="noopener">Markdown 图片粘贴工具 PicGo</a></li></ol>]]></content>
+    <content type="html"><![CDATA[<h2 id="版本说明"><a href="#版本说明" class="headerlink" title="版本说明"></a>版本说明</h2><ul><li>node.js v6.4.1</li><li>PigGo v2.1.2</li></ul><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>安装PicGo需要node.js环境，没有的看<a href="https://nodejs.org/en/" title="node.js" target="_blank" rel="noopener">这里</a>。<a href="https://github.com/Molunerfinn/picgo/releases" target="_blank" rel="noopener">下载</a>PicGo最新版本安装包，根据操作系统下载相应的安装包，以Windows为例，在Assets中点击picgo-setup-2.1.2.exe下载。本地双机安装到指定的目录。安装完成如下图所示：<br><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190720125229.png" alt="image"></p><h2 id="GitHub图床"><a href="#GitHub图床" class="headerlink" title="GitHub图床"></a>GitHub图床</h2><p>PicGo支持SM.MS图床、腾讯云COS、微博图床、GitHub图床、七牛图床、Imgur图床、阿里云OSS、又拍云等各种图床。各家图床各有利弊，但是最好找一个稳定靠谱点的。虽然不是每一个都研究过，但是也是耳闻一些消息。像微博图床2019/4添加了防盗链，微博图床的老粉几多欢喜几多愁；CDN加速？薅羊毛还是要还的。个人独钟GitHub（主要是免费），当然哪天GitHub不能访问了就告别代码吧。</p><p>GitHub图床设置还是蛮简单的，<a href="https://picgo.github.io/PicGo-Doc/zh/guide/config.html#github%E5%9B%BE%E5%BA%8A" target="_blank" rel="noopener">PicGo官网配置说明</a>。Windows点击右下角PicGo小图标打开软件，依次点击<strong>图床设置</strong>-&gt;<strong>GitHub图床</strong>，需要配置的有以下三个必须参数：</p><ul><li>仓库名</li><li>分支名</li><li>token</li></ul><p>仓库名要带github用户名的，如我的配置：<strong>eEricZeng/imgbed</strong>。分支名无特殊需求使用master即可。token稍微麻烦一点，需要<strong>登录GitHub</strong>-&gt;<strong>Settings</strong>-&gt;<strong>Developer settings</strong>-&gt;<strong>Personal access tokens</strong>-&gt;<strong>Generate new token</strong>，之后添加<strong>Note</strong>描述，勾选scopes中的repo（包含repo:status、repo_deployment、public_repo、repo:invite四项），点击<strong>Generate token</strong>生成token，复制到PicGo的token表单中，点击确定即可。返回到上传取即可体验PicGo。<br><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190720144537.png" alt="image"></p><p><a href="https://eericzeng.github.io"><strong>更多更新</strong></a></p><h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol><li><a href="https://molunerfinn.com/PicGo/" target="_blank" rel="noopener">PicGo官网</a></li><li><a href="https://blog.rxliuli.com/p/6138bec/" target="_blank" rel="noopener">Markdown 图片粘贴工具 PicGo</a></li></ol>]]></content>
     
     <summary type="html">
     
       
       
         &lt;h2 id=&quot;版本说明&quot;&gt;&lt;a href=&quot;#版本说明&quot; class=&quot;headerlink&quot; title=&quot;版本说明&quot;&gt;&lt;/a&gt;版本说明&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;hexo v3.9.0&lt;/li&gt;
 &lt;li&gt;node.js v6.4.1&lt;/li&gt;
-&lt;li&gt;PigGo v2.1.
+&lt;li&gt;PigGo v2.1.2&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;
       
     
     </summary>
+    
+      <category term="hexo" scheme="http://eericzeng.github.io/categories/hexo/"/>
     
     
       <category term="PicGo" scheme="http://eericzeng.github.io/tags/PicGo/"/>

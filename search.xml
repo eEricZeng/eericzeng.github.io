@@ -1,9 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Github上fork项目更新]]></title>
+    <url>%2F2019%2F07%2F22%2FGithub%E4%B8%8Afork%E9%A1%B9%E7%9B%AE%E6%9B%B4%E6%96%B0%2F</url>
+    <content type="text"><![CDATA[场景：很早之前fork了github/gitee/gitlab等等的项目，但是项目经过多次迭代提交了更多更新，而自己账号下面被fork过来的项目并没有及时更新。此时，需要把提交过的内容更新到自己账号下的远程分支上。以我自己fork过的一个项目为例，主要分添加上游仓库和同步两个步骤。 添加上游仓库查看远程分支状态： 1git remove -v 添加需要同步的上游仓库： 1git remote add upstream https://github.com/tywo45/t-io 再次查看远程状态： 12345$ git remote -vorigin git@github.com:eEricZeng/t-io.git (fetch)origin git@github.com:eEricZeng/t-io.git (push)upstream https://github.com/tywo45/t-io (fetch)upstream https://github.com/tywo45/t-io (push) 同步将上游仓库内容拉到本地： 1git fetch upstream 此时，并没有将上游仓库的内容合并到本地中，可以使用status查看，也可以对比更新： 1git diff master upstream/master --stat 若要同步哪个分支就切换到对应的分支，例如master分支： 1git checkout master 同步并推送到自己账号下的远程分支，这里的同步本质是把upstream中master分支的内容合并到当前的master分支中： 12git merge upstream/mastergit push origin master]]></content>
+      <categories>
+        <category>git</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+        <tag>github</tag>
+        <tag>fork</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[PicGo搭建Github图床]]></title>
     <url>%2F2019%2F07%2F20%2FPicGo%E6%90%AD%E5%BB%BAGithub%E5%9B%BE%E5%BA%8A%2F</url>
-    <content type="text"><![CDATA[版本说明 hexo v3.9.0 node.js v6.4.1 PigGo v2.1.2 安装安装PicGo需要node.js环境，没有的看这里。下载PicGo最新版本安装包，根据操作系统下载相应的安装包，以Windows为例，在Assets中点击picgo-setup-2.1.2.exe下载。本地双机安装到指定的目录。安装完成如下图所示： GitHub图床PicGo支持SM.MS图床、腾讯云COS、微博图床、GitHub图床、七牛图床、Imgur图床、阿里云OSS、又拍云等各种图床。各家图床各有利弊，但是最好找一个稳定靠谱点的。虽然不是每一个都研究过，但是也是耳闻一些消息。像微博图床2019/4添加了防盗链，微博图床的老粉几多欢喜几多愁；CDN加速？薅羊毛还是要还的。个人独钟GitHub（主要是免费），当然哪天GitHub不能访问了就告别代码吧。 GitHub图床设置还是蛮简单的，PicGo官网配置说明。Windows点击右下角PicGo小图标打开软件，依次点击图床设置-&gt;GitHub图床，需要配置的有以下三个必须参数： 仓库名 分支名 token 仓库名要带github用户名的，如我的配置：eEricZeng/imgbed。分支名无特殊需求使用master即可。token稍微麻烦一点，需要登录GitHub-&gt;Settings-&gt;Developer settings-&gt;Personal access tokens-&gt;Generate new token，之后添加Note描述，勾选scopes中的repo（包含repo:status、repo_deployment、public_repo、repo:invite四项），点击Generate token生成token，复制到PicGo的token表单中，点击确定即可。返回到上传取即可体验PicGo。 更多更新 参考资料 PicGo官网 Markdown 图片粘贴工具 PicGo]]></content>
+    <content type="text"><![CDATA[版本说明 node.js v6.4.1 PigGo v2.1.2 安装安装PicGo需要node.js环境，没有的看这里。下载PicGo最新版本安装包，根据操作系统下载相应的安装包，以Windows为例，在Assets中点击picgo-setup-2.1.2.exe下载。本地双机安装到指定的目录。安装完成如下图所示： GitHub图床PicGo支持SM.MS图床、腾讯云COS、微博图床、GitHub图床、七牛图床、Imgur图床、阿里云OSS、又拍云等各种图床。各家图床各有利弊，但是最好找一个稳定靠谱点的。虽然不是每一个都研究过，但是也是耳闻一些消息。像微博图床2019/4添加了防盗链，微博图床的老粉几多欢喜几多愁；CDN加速？薅羊毛还是要还的。个人独钟GitHub（主要是免费），当然哪天GitHub不能访问了就告别代码吧。 GitHub图床设置还是蛮简单的，PicGo官网配置说明。Windows点击右下角PicGo小图标打开软件，依次点击图床设置-&gt;GitHub图床，需要配置的有以下三个必须参数： 仓库名 分支名 token 仓库名要带github用户名的，如我的配置：eEricZeng/imgbed。分支名无特殊需求使用master即可。token稍微麻烦一点，需要登录GitHub-&gt;Settings-&gt;Developer settings-&gt;Personal access tokens-&gt;Generate new token，之后添加Note描述，勾选scopes中的repo（包含repo:status、repo_deployment、public_repo、repo:invite四项），点击Generate token生成token，复制到PicGo的token表单中，点击确定即可。返回到上传取即可体验PicGo。 更多更新 参考资料 PicGo官网 Markdown 图片粘贴工具 PicGo]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
       <tags>
         <tag>PicGo</tag>
         <tag>图床</tag>
@@ -97,9 +113,9 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>%2Fabout%2Findex.html</url>
-    <content type="text"><![CDATA[联系方式： QQ：549373335 网易：zengguang05@163.com Gmail：zengguang05@gmail.com]]></content>
+    <title><![CDATA[分类]]></title>
+    <url>%2Fcategories%2Findex.html</url>
+    <content type="text"></content>
   </entry>
   <entry>
     <title><![CDATA[标签]]></title>
@@ -107,8 +123,8 @@
     <content type="text"></content>
   </entry>
   <entry>
-    <title><![CDATA[分类]]></title>
-    <url>%2Fcategories%2Findex.html</url>
-    <content type="text"></content>
+    <title></title>
+    <url>%2Fabout%2Findex.html</url>
+    <content type="text"><![CDATA[联系方式： QQ：549373335 网易：zengguang05@163.com Gmail：zengguang05@gmail.com]]></content>
   </entry>
 </search>
