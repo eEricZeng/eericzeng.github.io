@@ -105,18 +105,18 @@
 
 
 
-  <meta name="description" content="版本说明 hexo v3.9.0 hexo-theme-next v7.1.2  不蒜子NexT内置了leancloud、firebase、busuanzi三种访客统计插件，前两种需要到官网注册获取网站颁发的appKey，相对麻烦，有兴趣的请访问leancloud、firebase。而不蒜子配置只需要将false改为true即可： 12busuanzi_count:  enable: true">
-<meta name="keywords" content="hexo,阅读统计,百度统计">
+  <meta name="description" content="线程安全四种线程安全的单例实现方式 饿汉式123456789101112131415161718192021222324252627282930/** * 饿汉式单例，在第一次加载类到内存时进行初始化（线程安全）。 * &amp;lt;p&amp;gt; * &amp;lt;strong&amp;gt;缺点：&amp;lt;/strong&amp;gt;非懒加载模式，在实例依赖参数或配置文件时无法使用。 * * @author zengguan">
+<meta name="keywords" content="设计模式,pattern,singleton">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexo添加阅读统计">
-<meta property="og:url" content="http://eericzeng.github.io/2019/07/15/hexo添加阅读统计/index.html">
+<meta property="og:title" content="设计模式-Singleton Pattern">
+<meta property="og:url" content="http://eericzeng.github.io/2019/07/27/设计模式-Singleton-Pattern/index.html">
 <meta property="og:site_name" content="EricZeng">
-<meta property="og:description" content="版本说明 hexo v3.9.0 hexo-theme-next v7.1.2  不蒜子NexT内置了leancloud、firebase、busuanzi三种访客统计插件，前两种需要到官网注册获取网站颁发的appKey，相对麻烦，有兴趣的请访问leancloud、firebase。而不蒜子配置只需要将false改为true即可： 12busuanzi_count:  enable: true">
+<meta property="og:description" content="线程安全四种线程安全的单例实现方式 饿汉式123456789101112131415161718192021222324252627282930/** * 饿汉式单例，在第一次加载类到内存时进行初始化（线程安全）。 * &amp;lt;p&amp;gt; * &amp;lt;strong&amp;gt;缺点：&amp;lt;/strong&amp;gt;非懒加载模式，在实例依赖参数或配置文件时无法使用。 * * @author zengguan">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-15T11:58:04.103Z">
+<meta property="og:updated_time" content="2019-07-27T12:11:53.087Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hexo添加阅读统计">
-<meta name="twitter:description" content="版本说明 hexo v3.9.0 hexo-theme-next v7.1.2  不蒜子NexT内置了leancloud、firebase、busuanzi三种访客统计插件，前两种需要到官网注册获取网站颁发的appKey，相对麻烦，有兴趣的请访问leancloud、firebase。而不蒜子配置只需要将false改为true即可： 12busuanzi_count:  enable: true">
+<meta name="twitter:title" content="设计模式-Singleton Pattern">
+<meta name="twitter:description" content="线程安全四种线程安全的单例实现方式 饿汉式123456789101112131415161718192021222324252627282930/** * 饿汉式单例，在第一次加载类到内存时进行初始化（线程安全）。 * &amp;lt;p&amp;gt; * &amp;lt;strong&amp;gt;缺点：&amp;lt;/strong&amp;gt;非懒加载模式，在实例依赖参数或配置文件时无法使用。 * * @author zengguan">
 
 
 
@@ -126,7 +126,7 @@
 
   
   
-  <link rel="canonical" href="http://eericzeng.github.io/2019/07/15/hexo添加阅读统计/">
+  <link rel="canonical" href="http://eericzeng.github.io/2019/07/27/设计模式-Singleton-Pattern/">
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>hexo添加阅读统计 | EricZeng</title>
+  <title>设计模式-Singleton Pattern | EricZeng</title>
   
 
 
@@ -409,7 +409,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://eericzeng.github.io/2019/07/15/hexo添加阅读统计/">
+    <link itemprop="mainEntityOfPage" href="http://eericzeng.github.io/2019/07/27/设计模式-Singleton-Pattern/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eric Zeng">
@@ -426,7 +426,7 @@
 
         
         
-          <h2 class="post-title" itemprop="name headline">hexo添加阅读统计
+          <h2 class="post-title" itemprop="name headline">设计模式-Singleton Pattern
 
               
             
@@ -452,7 +452,7 @@
                 
               
 
-              <time title="创建时间：2019-07-15 12:29:48 / 修改时间：19:58:04" itemprop="dateCreated datePublished" datetime="2019-07-15T12:29:48+08:00">2019-07-15</time>
+              <time title="创建时间：2019-07-27 20:10:45 / 修改时间：20:11:53" itemprop="dateCreated datePublished" datetime="2019-07-27T20:10:45+08:00">2019-07-27</time>
             </span>
           
 
@@ -471,7 +471,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/hexo/" itemprop="url" rel="index"><span itemprop="name">hexo</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
 
                 
                 
@@ -517,24 +517,21 @@
       
 
       
-        <h2 id="版本说明"><a href="#版本说明" class="headerlink" title="版本说明"></a>版本说明</h2><ul>
-<li>hexo v3.9.0</li>
-<li>hexo-theme-next v7.1.2</li>
-</ul>
-<h2 id="不蒜子"><a href="#不蒜子" class="headerlink" title="不蒜子"></a>不蒜子</h2><p>NexT内置了leancloud、firebase、busuanzi三种访客统计插件，前两种需要到官网注册获取网站颁发的appKey，相对麻烦，有兴趣的请访问<a href="https://leancloud.cn" target="_blank" rel="noopener">leancloud</a>、<a href="https://console.firebase.google.com/u/0/" target="_blank" rel="noopener">firebase</a>。而不蒜子配置只需要将false改为true即可：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">busuanzi_count:</span></span><br><span class="line"><span class="attr">  enable:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+        <h2 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h2><p>四种线程安全的单例实现方式</p>
+<h3 id="饿汉式"><a href="#饿汉式" class="headerlink" title="饿汉式"></a>饿汉式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 饿汉式单例，在第一次加载类到内存时进行初始化（线程安全）。</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * &lt;strong&gt;缺点：&lt;/strong&gt;非懒加载模式，在实例依赖参数或配置文件时无法使用。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zengguang</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StarveSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 第一次类加载时创建实例。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> StarveSingleton INSTANCE = <span class="keyword">new</span> StarveSingleton();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构造函数私有，不允许外部创建实例。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">StarveSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 直接返回类加载时创建的实例。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> &#123;<span class="doctag">@link</span> StarveSingleton&#125;的实例。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> StarveSingleton <span class="title">getSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>更多用法请参考官网说明<a href="http://ibruce.info/2015/04/04/busuanzi/" target="_blank" rel="noopener">不蒜子官网</a>。</p>
-<h2 id="百度统计"><a href="#百度统计" class="headerlink" title="百度统计"></a>百度统计</h2><p>起初我以为阅读统计是通过百度统计进行计数的，后来发现百度统计、GA等只是分析工具，并不会把统计信息显示在博客页面上，所以是否需要百度统计看个人需求。打开<a href="https://tongji.baidu.com/" target="_blank" rel="noopener"><strong>百度统计</strong></a>，登录并进入<strong>网站列表</strong>，点击<strong>新增网站</strong>。以我的GitPage为例，填写新增网站表单，添加必要字段<strong>网站域名</strong>：eericzeng.github.io，<strong>网站首页</strong>：<a href="https://eericzeng.github.io，" target="_blank" rel="noopener">https://eericzeng.github.io，</a> <strong>网站名称</strong> 、<strong>行业类别</strong>选填。点击“确定”后，会出现包含如下信息的提示：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">var</span> _hmt = _hmt || [];</span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> hm = <span class="built_in">document</span>.createElement(<span class="string">"script"</span>);</span><br><span class="line">  hm.src = <span class="string">"https://hm.baidu.com/hm.js?324a1c41343d123482f031976f9"</span>;</span><br><span class="line">  <span class="keyword">var</span> s = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"script"</span>)[<span class="number">0</span>];</span><br><span class="line">  s.parentNode.insertBefore(hm, s);</span><br><span class="line">&#125;)();</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="双检锁"><a href="#双检锁" class="headerlink" title="双检锁"></a>双检锁</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 双检锁单例模式（懒汉式，线程安全）。</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * &lt;strong&gt;注意:&lt;/strong&gt;JDK1.5之前的版本volatile声明不一定起作用。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zengguang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> JDK1.5</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DoubleCheckSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 一定要有&lt;strong&gt;volatile&lt;/strong&gt;修饰，否则instance受指令重排的影响会返回一个空对象。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> DoubleCheckSingleton instance;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构造函数私有，不允许外部创建实例。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">DoubleCheckSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回一个单例，当第一次调用时才创建一个实例。</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     * &lt;code&gt;instance = new DoubleCheckSingleton();&lt;/code&gt;并非源自操作，JVM中该行代码做了如下操作：</span></span><br><span class="line"><span class="comment">     * &lt;ol&gt;</span></span><br><span class="line"><span class="comment">     * &lt;li&gt;给instance分配内存&lt;/li&gt;</span></span><br><span class="line"><span class="comment">     * &lt;li&gt;调用&#123;<span class="doctag">@link</span> DoubleCheckSingleton&#125;的构造函数来初始化成员变量&lt;/li&gt;</span></span><br><span class="line"><span class="comment">     * &lt;li&gt;将instance对象指向分配的内存空间&lt;/li&gt;</span></span><br><span class="line"><span class="comment">     * &lt;/ol&gt;</span></span><br><span class="line"><span class="comment">     * JVM在做指令重排时，并不能保证2/3步的顺序，顺序可能是1-2-3或者1-3-2，所以其他线程调用时可能&#123;<span class="doctag">@link</span> DoubleCheckSingleton&#125;还没有初始化，进而出现NPE的问题。所以在instance变量声明需要加&#123;<span class="doctag">@code</span> volatile&#125;修饰。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> &#123;<span class="doctag">@link</span> DoubleCheckSingleton&#125;的单实例。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> DoubleCheckSingleton <span class="title">getSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == instance) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (DoubleCheckSingleton.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">null</span> == instance) &#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> DoubleCheckSingleton();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>复制”<a href="https://hm.baidu.com/hm.js?&quot;" target="_blank" rel="noopener">https://hm.baidu.com/hm.js?&quot;</a> 后面的Id字符串，粘贴到主题配置文件中，如themes/next/_config.yml</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Baidu Analytics ID</span></span><br><span class="line"><span class="attr">baidu_analytics:</span> <span class="number">324</span><span class="string">a1c41343d123482f031976f9</span></span><br></pre></td></tr></table></figure>
+<h3 id="静态内部类"><a href="#静态内部类" class="headerlink" title="静态内部类"></a>静态内部类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 静态内部类单例（懒汉式，线程安全）。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zengguang</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NestedClassSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构造函数私有，不允许外部创建实例。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">NestedClassSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 静态内部类只有在第一次引用的时候才会被加载。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> &#123;<span class="doctag">@link</span> NestedClassSingleton&#125;的单实例。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> NestedClassSingleton <span class="title">getSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SingletonHolder.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 内部类，且为私有的，只有&#123;<span class="doctag">@link</span> NestedClassSingleton&#125;本身才能访问。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">SingletonHolder</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> NestedClassSingleton INSTANCE = <span class="keyword">new</span> NestedClassSingleton();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h2><p>重新打包静态文件并发布：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+<h3 id="枚举类型"><a href="#枚举类型" class="headerlink" title="枚举类型"></a>枚举类型</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 枚举型单例模式（线程安全）。</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zengguang</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> JDK1.5</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EnumSingleton</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构造函数私有，不允许外部创建实例。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">EnumSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> &#123;<span class="doctag">@link</span> EnumSingleton&#125;的单实例</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> EnumSingleton <span class="title">getSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> Singleton.INSTANCE.getSingleton();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 这种实现方式有点类似静态内部类，而且枚举类型本质还是一个类。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">enum</span> Singleton &#123;</span><br><span class="line"></span><br><span class="line">        INSTANCE(<span class="keyword">new</span> EnumSingleton());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> EnumSingleton isntance;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 外部类作为构造参数</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> singleton</span></span><br><span class="line"><span class="comment">         *            外部类</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="title">Singleton</span><span class="params">(EnumSingleton singleton)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.isntance = singleton;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 枚举类型持有的单实例</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@return</span> &#123;<span class="doctag">@link</span> EnumSingleton&#125;的单实例</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> EnumSingleton <span class="title">getSingleton</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> isntance;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>点击<strong>百度统计</strong>控制台<strong>，代码管理</strong>-&gt;<strong>代码安装检查</strong>进行安装校验。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a href="https://blog.csdn.net/yy254117440/article/details/52305175" target="_blank" rel="noopener">Java 利用枚举实现单例模式</a></li>
+<li><a href="https://blog.csdn.net/u011595939/article/details/79972371" target="_blank" rel="noopener">Java实现单例模式（懒汉式、饿汉式、双重检验锁、静态内部类方式、枚举方式）</a></li>
+<li><a href="https://blog.csdn.net/nsw911439370/article/details/50456231" target="_blank" rel="noopener">单例模式有五种写法：懒汉、饿汉、双重检验锁、静态内部类、枚举</a></li>
+</ol>
+<h2 id="GitHub仓库"><a href="#GitHub仓库" class="headerlink" title="GitHub仓库"></a>GitHub仓库</h2><p><a href="https://github.com/eEricZeng/demo/tree/pattern-singleton" target="_blank" rel="noopener">SINGLETON</a></p>
 
       
     </div>
@@ -569,7 +566,7 @@
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
     
-    <a href="http://eericzeng.github.io/2019/07/15/hexo添加阅读统计/" title="hexo添加阅读统计">http://eericzeng.github.io/2019/07/15/hexo添加阅读统计/</a>
+    <a href="http://eericzeng.github.io/2019/07/27/设计模式-Singleton-Pattern/" title="设计模式-Singleton Pattern">http://eericzeng.github.io/2019/07/27/设计模式-Singleton-Pattern/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！</li>
@@ -585,11 +582,11 @@
         
         <div class="post-tags">
           
-            <a href="/tags/hexo/" rel="tag"><i class="fa fa-tag"></i> hexo</a>
+            <a href="/tags/设计模式/" rel="tag"><i class="fa fa-tag"></i> 设计模式</a>
           
-            <a href="/tags/阅读统计/" rel="tag"><i class="fa fa-tag"></i> 阅读统计</a>
+            <a href="/tags/pattern/" rel="tag"><i class="fa fa-tag"></i> pattern</a>
           
-            <a href="/tags/百度统计/" rel="tag"><i class="fa fa-tag"></i> 百度统计</a>
+            <a href="/tags/singleton/" rel="tag"><i class="fa fa-tag"></i> singleton</a>
           
         </div>
       
@@ -623,8 +620,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/14/hexo站内搜索/" rel="next" title="hexo站内搜索">
-                <i class="fa fa-chevron-left"></i> hexo站内搜索
+              <a href="/2019/07/25/设计模式-Builder Pattern/" rel="next" title="设计模式-Builder Pattern">
+                <i class="fa fa-chevron-left"></i> 设计模式-Builder Pattern
               </a>
             
           </div>
@@ -632,10 +629,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/07/20/PicGo搭建Github图床/" rel="prev" title="PicGo搭建Github图床">
-                PicGo搭建Github图床 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -901,7 +894,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#版本说明"><span class="nav-number">1.</span> <span class="nav-text">版本说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不蒜子"><span class="nav-number">2.</span> <span class="nav-text">不蒜子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#百度统计"><span class="nav-number">3.</span> <span class="nav-text">百度统计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发布"><span class="nav-number">4.</span> <span class="nav-text">发布</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#线程安全"><span class="nav-number">1.</span> <span class="nav-text">线程安全</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#饿汉式"><span class="nav-number">1.1.</span> <span class="nav-text">饿汉式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双检锁"><span class="nav-number">1.2.</span> <span class="nav-text">双检锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#静态内部类"><span class="nav-number">1.3.</span> <span class="nav-text">静态内部类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#枚举类型"><span class="nav-number">1.4.</span> <span class="nav-text">枚举类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitHub仓库"><span class="nav-number">3.</span> <span class="nav-text">GitHub仓库</span></a></li></ol></div>
             
 
           </div>
