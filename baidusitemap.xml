@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://eericzeng.github.io/2019/07/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Builder%20Pattern/</loc>
-    <lastmod>2019-07-27</lastmod>
+    <loc>http://eericzeng.github.io/2019/07/29/CentOS%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7/</loc>
+    <lastmod>2019-07-29</lastmod>
   </url>  <url>
-    <loc>http://eericzeng.github.io/2019/07/27/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Singleton-Pattern/</loc>
+    <loc>http://eericzeng.github.io/2019/07/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Builder/</loc>
+    <lastmod>2019-07-29</lastmod>
+  </url>  <url>
+    <loc>http://eericzeng.github.io/2019/07/27/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Singleton/</loc>
     <lastmod>2019-07-27</lastmod>
   </url>  <url>
     <loc>http://eericzeng.github.io/2019/07/20/PicGo%E6%90%AD%E5%BB%BAGithub%E5%9B%BE%E5%BA%8A/</loc>
