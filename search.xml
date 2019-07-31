@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Eclipse查看jar包源码]]></title>
+    <url>%2F2019%2F07%2F31%2FEclipse%E6%9F%A5%E7%9C%8Bjar%E5%8C%85%E6%BA%90%E7%A0%81%2F</url>
+    <content type="text"><![CDATA[还在使用Eclipse的同学真是伤不起，点开一个类报一个Source not fournd。两步完全解决查看jar源码的问题。 Maven配置如图，打开Window-&gt;Preferences-&gt;Maven，勾选“Download Artifact Sources”，所有Maven公共仓库提供Source的jar包都可以下到源码，而且带注释。 Java Decomplier配置 下载反编译插件jd-eclipse-2.0.0（其他版本看这里） Eclipse安装（Help-&gt;Install New Software-&gt;Add，Archive选择“jd-eclipse-2.0.0.zip”） 安装完后重启Eclipse 如下图所示，打开Window-&gt;Preferences-&gt;Gneral-&gt;Editors-&gt;File Associations，选中“*.class without source”，在下方的Associated editors中选中“JD Class File Viewer”点击“Default-&gt;Apply and Close”。 点评*.class不用配置成JD，用原来的Class File Viewer就可以。反编译出来的毕竟不是源码，有可能行不对齐，所以会看到JD用注释标注的行号。还有反编译出来的并不一定准确，而且没注释。 建议换IDEA吧，IDEA自带反编译工具。]]></content>
+      <categories>
+        <category>开发工具</category>
+      </categories>
+      <tags>
+        <tag>开发工具</tag>
+        <tag>eclipse</tag>
+        <tag>源码</tag>
+        <tag>jar</tag>
+        <tag>decomplier</tag>
+        <tag>java</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[CentOS添加用户]]></title>
     <url>%2F2019%2F07%2F29%2FCentOS%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7%2F</url>
     <content type="text"><![CDATA[添加用户1useradd username 添加用户的同时将该用户指定到了同名的用户组中，如果将新添加的用户放到root组中，执行如下命令即可： 1useradd -g root username root是用户组名，username是用户名。 添加完用户要及时修改密码： 1passwd zengguang 密码输入两次。 切换用户： 1su username]]></content>
@@ -20,6 +36,7 @@
         <category>设计模式</category>
       </categories>
       <tags>
+        <tag>java</tag>
         <tag>设计模式</tag>
         <tag>pattern</tag>
         <tag>singleton</tag>
@@ -33,6 +50,7 @@
         <category>设计模式</category>
       </categories>
       <tags>
+        <tag>java</tag>
         <tag>设计模式</tag>
         <tag>builder</tag>
         <tag>pattern</tag>
@@ -59,9 +77,9 @@
         <category>hexo</category>
       </categories>
       <tags>
-        <tag>hexo</tag>
         <tag>PicGo</tag>
         <tag>图床</tag>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -128,6 +146,7 @@
         <category>SpringBoot</category>
       </categories>
       <tags>
+        <tag>java</tag>
         <tag>SpringBoot</tag>
         <tag>@Value</tag>
         <tag>properties</tag>
@@ -151,13 +170,13 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[标签]]></title>
-    <url>%2Ftags%2Findex.html</url>
+    <title><![CDATA[分类]]></title>
+    <url>%2Fcategories%2Findex.html</url>
     <content type="text"></content>
   </entry>
   <entry>
-    <title><![CDATA[分类]]></title>
-    <url>%2Fcategories%2Findex.html</url>
+    <title><![CDATA[标签]]></title>
+    <url>%2Ftags%2Findex.html</url>
     <content type="text"></content>
   </entry>
   <entry>
