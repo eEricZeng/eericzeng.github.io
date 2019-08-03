@@ -3,17 +3,17 @@
   <entry>
     <title><![CDATA[Eclipse查看jar包源码]]></title>
     <url>%2F2019%2F07%2F31%2FEclipse%E6%9F%A5%E7%9C%8Bjar%E5%8C%85%E6%BA%90%E7%A0%81%2F</url>
-    <content type="text"><![CDATA[还在使用Eclipse的同学真是伤不起，点开一个类报一个Source not fournd。两步完全解决查看jar源码的问题。 Maven配置如图，打开Window-&gt;Preferences-&gt;Maven，勾选“Download Artifact Sources”，所有Maven公共仓库提供Source的jar包都可以下到源码，而且带注释。 Java Decomplier配置 下载反编译插件jd-eclipse-2.0.0（其他版本看这里） Eclipse安装（Help-&gt;Install New Software-&gt;Add，Archive选择“jd-eclipse-2.0.0.zip”） 安装完后重启Eclipse 如下图所示，打开Window-&gt;Preferences-&gt;Gneral-&gt;Editors-&gt;File Associations，选中“*.class without source”，在下方的Associated editors中选中“JD Class File Viewer”点击“Default-&gt;Apply and Close”。 点评*.class不用配置成JD，用原来的Class File Viewer就可以。反编译出来的毕竟不是源码，有可能行不对齐，所以会看到JD用注释标注的行号。还有反编译出来的并不一定准确，而且没注释。 建议换IDEA吧，IDEA自带反编译工具。]]></content>
+    <content type="text"><![CDATA[还在使用Eclipse的同学真是伤不起，点开一个未知类报一个Source not fournd。两步完全解决查看jar源码的问题。 Maven配置如图，打开Window-&gt;Preferences-&gt;Maven，勾选“Download Artifact Sources”，所有Maven公共仓库提供Source的jar包都可以下到源码，而且带注释。 Java Decomplier配置 下载反编译插件jd-eclipse-2.0.0（其他版本看这里） Eclipse安装（Help-&gt;Install New Software-&gt;Add，Archive选择“jd-eclipse-2.0.0.zip”） 安装完后重启Eclipse 如下图所示，打开Window-&gt;Preferences-&gt;Gneral-&gt;Editors-&gt;File Associations，选中“*.class without source”，在下方的Associated editors中选中“JD Class File Viewer”点击“Default-&gt;Apply and Close”。 点评*.class不用配置成JD，用原来的Class File Viewer就可以。反编译出来的毕竟不是源码，有可能行不对齐，所以会看到JD用注释标注的行号。还有反编译出来的并不一定准确，而且没注释。 建议换IDEA吧，IDEA自带反编译工具。]]></content>
       <categories>
         <category>开发工具</category>
       </categories>
       <tags>
+        <tag>java</tag>
         <tag>开发工具</tag>
         <tag>eclipse</tag>
         <tag>源码</tag>
         <tag>jar</tag>
         <tag>decomplier</tag>
-        <tag>java</tag>
       </tags>
   </entry>
   <entry>
@@ -36,8 +36,8 @@
         <category>设计模式</category>
       </categories>
       <tags>
-        <tag>java</tag>
         <tag>设计模式</tag>
+        <tag>java</tag>
         <tag>pattern</tag>
         <tag>singleton</tag>
       </tags>
@@ -45,13 +45,13 @@
   <entry>
     <title><![CDATA[设计模式-Builder Pattern]]></title>
     <url>%2F2019%2F07%2F25%2F%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Builder%2F</url>
-    <content type="text"><![CDATA[Builder Pattern：中文译名为“生成器模式”、“建造模式”。 示例假设一个对象Student： 12345678910111213141516171819202122232425262728293031323334353637383940414243public class Student &#123; private int id; private String name; private int age; private String gender; public int getId() &#123; return id; &#125; public void setId(int id) &#123; this.id = id; &#125; public String getName() &#123; return name; &#125; public void setName(String name) &#123; this.name = name; &#125; public int getAge() &#123; return age; &#125; public void setAge(int age) &#123; this.age = age; &#125; public String getGender() &#123; return gender; &#125; public void setGender(String gender) &#123; this.gender = gender; &#125;&#125; 初级编码不使用builder模式，我们创建一个实例并给实例赋值是这样的： 12345Student std = new Student();std.setId(10001);std.setAge(18);std.setName("小明");std.setGender("male"); 使用builder模式重新改造一下Student类： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091public class Student &#123; private int id; private String name; private int age; private String gender; public Student() &#123; &#125; public Student(int id, String name, int age, String gender) &#123; this.id = id; this.name = name; this.age = age; this.gender = gender; &#125; public static Student.StudentBuilder builder()&#123; return new StudentBuilder(); &#125; public int getId() &#123; return id; &#125; public void setId(int id) &#123; this.id = id; &#125; public String getName() &#123; return name; &#125; public void setName(String name) &#123; this.name = name; &#125; public int getAge() &#123; return age; &#125; public void setAge(int age) &#123; this.age = age; &#125; public String getGender() &#123; return gender; &#125; public void setGender(String gender) &#123; this.gender = gender; &#125; public static class StudentBuilder &#123; private int id; private String name; private int age; private String gender; public StudentBuilder id(int id) &#123; this.id = id; return this; &#125; public StudentBuilder name(String name) &#123; this.name = name; return this; &#125; public StudentBuilder age(int age) &#123; this.age = age; return this; &#125; public StudentBuilder gender(String gender) &#123; this.gender = gender; return this; &#125; public Student build() &#123; return new Student(this.id, this.name, this.age, this.gender); &#125; &#125;&#125; 使用builder模式后的画风是这个样子的： 1Student std = Student.builder().id(10001).age(18).name("小明").gender("male").build(); 从此再也不用先new一个实例然后挨个赋值啦，尤其对那些属性超级多的对象，或者创建实例时有些属性是可选的，写起来更是简洁。 改造builder模式要点 静态内部类 静态内部类属性设置方法与属性名相同（建议相同） 静态内部类属性设置方法返回内部类实例本身 内部静态类需要一个build()方法且返回类型为外部类 外部类需要实现一个全参数和无参构造函数 外部类需要一个静态builder()方法且返回类型为静态内部类 LombokLombok提供了@Builder声明式注解，直接可以让POJO拥有builder模式。 参考资料： 《Head First 设计模式》 org.elasticsearch.common.xcontent.XContentBuilder J-IM消息类org.jim.common.packets.Message及子类设计(v2.6.0) Lombok使用与原理]]></content>
+    <content type="text"><![CDATA[Builder Pattern：中文译名为“生成器模式”、“建造模式”。 示例假设一个对象Student： 12345678910111213141516171819202122232425262728293031323334353637383940414243public class Student &#123; private int id; private String name; private int age; private String gender; public int getId() &#123; return id; &#125; public void setId(int id) &#123; this.id = id; &#125; public String getName() &#123; return name; &#125; public void setName(String name) &#123; this.name = name; &#125; public int getAge() &#123; return age; &#125; public void setAge(int age) &#123; this.age = age; &#125; public String getGender() &#123; return gender; &#125; public void setGender(String gender) &#123; this.gender = gender; &#125;&#125; 初级编码不使用builder模式，我们创建一个实例并给实例赋值是这样的： 12345Student std = new Student();std.setId(10001);std.setAge(18);std.setName("小明");std.setGender("male"); 使用builder模式重新改造一下Student类： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485868788899091public class Student &#123; private int id; private String name; private int age; private String gender; public Student() &#123; &#125; public Student(int id, String name, int age, String gender) &#123; this.id = id; this.name = name; this.age = age; this.gender = gender; &#125; public static Student.StudentBuilder builder()&#123; return new StudentBuilder(); &#125; public int getId() &#123; return id; &#125; public void setId(int id) &#123; this.id = id; &#125; public String getName() &#123; return name; &#125; public void setName(String name) &#123; this.name = name; &#125; public int getAge() &#123; return age; &#125; public void setAge(int age) &#123; this.age = age; &#125; public String getGender() &#123; return gender; &#125; public void setGender(String gender) &#123; this.gender = gender; &#125; public static class StudentBuilder &#123; private int id; private String name; private int age; private String gender; public StudentBuilder id(int id) &#123; this.id = id; return this; &#125; public StudentBuilder name(String name) &#123; this.name = name; return this; &#125; public StudentBuilder age(int age) &#123; this.age = age; return this; &#125; public StudentBuilder gender(String gender) &#123; this.gender = gender; return this; &#125; public Student build() &#123; return new Student(this.id, this.name, this.age, this.gender); &#125; &#125;&#125; 使用builder模式后的画风是这个样子的： 1Student std = Student.builder().id(10001).age(18).name("小明").gender("male").build(); 从此再也不用先new一个实例然后挨个赋值啦，尤其对那些属性超级多的对象，或者创建实例时有些属性是可选的，写起来更是简洁。 改造builder模式要点 静态内部类 静态内部类属性设置方法与属性名相同（建议相同） 静态内部类属性设置方法返回内部类实例本身 内部静态类需要一个build()方法且返回类型为外部类 外部类需要实现一个全参数和无参构造函数 外部类需要一个静态builder()方法且返回类型为静态内部类 LombokLombok提供了@Builder声明式注解，直接可以让POJO拥有builder模式。 参考资料： 《Head First 设计模式》 org.elasticsearch.common.xcontent.XContentBuilder J-IM消息类org.jim.common.packets.Message及子类设计(v2.6.0) Lombok使用与原理 更新(2019/8/3)今天看到几篇Builder模式的博客，对之前的设计进行改进： 静态内部类 静态内部类属性设置方法与属性名相同（建议相同） 静态内部类属性设置方法返回内部类实例本身 内部静态类需要一个build()方法且返回类型为外部类 外部类需要实现一个全参数和无参构造函数 外部类需要一个入参为内部类的构造函数 外部类需要一个静态builder()方法且返回类型为静态内部类 改进1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909192public class Student &#123; private int id; private String name; private int age; private String gender; public Student() &#123; &#125; public Student(Builder builder) &#123; this.id = builder.id; this.name = builder.name; this.age = builder.age; this.gender = builder.gender; &#125; @Override public String toString() &#123; return "Student [id=" + id + ", name=" + name + ", age=" + age + ", gender=" + gender + "]"; &#125; public int getId() &#123; return id; &#125; public void setId(int id) &#123; this.id = id; &#125; public String getName() &#123; return name; &#125; public void setName(String name) &#123; this.name = name; &#125; public int getAge() &#123; return age; &#125; public void setAge(int age) &#123; this.age = age; &#125; public String getGender() &#123; return gender; &#125; public void setGender(String gender) &#123; this.gender = gender; &#125; public static class Builder &#123; private int id; private String name; private int age; private String gender; public Builder id(int id) &#123; this.id = id; return this; &#125; public Builder name(String name) &#123; this.name = name; return this; &#125; public Builder age(int age) &#123; this.age = age; return this; &#125; public Builder gender(String gender) &#123; this.gender = gender; return this; &#125; public Student build() &#123; return new Student(this); &#125; &#125;&#125; 使用对比1234// 改进前Student std = Student.builder().id(10001).age(18).name("小明").gender("male").build();// 改进后Student std = new Student.Builder().id(10001).age(18).name("小明").gender("male").build(); 讨论当初想到用builder模式时，是在项目中有些javabean属性特别多，不想中规中矩的一行一行写setter方法。这里没有使用final修饰属性，说明这不是一个可变类，有一个public的无参构造函数，且所有的getter/setter方法都可访问，所以也可以看做是一个JavaBean。 参考资料 优雅地创建复杂对象 —— Builder 模式 设计模式之Builder模式]]></content>
       <categories>
         <category>设计模式</category>
       </categories>
       <tags>
-        <tag>java</tag>
         <tag>设计模式</tag>
+        <tag>java</tag>
         <tag>builder</tag>
         <tag>pattern</tag>
       </tags>
@@ -77,9 +77,9 @@
         <category>hexo</category>
       </categories>
       <tags>
+        <tag>hexo</tag>
         <tag>PicGo</tag>
         <tag>图床</tag>
-        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -170,9 +170,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[分类]]></title>
-    <url>%2Fcategories%2Findex.html</url>
-    <content type="text"></content>
+    <title></title>
+    <url>%2Fabout%2Findex.html</url>
+    <content type="text"><![CDATA[联系方式： QQ：549373335 网易：zengguang05@163.com Gmail：zengguang05@gmail.com]]></content>
   </entry>
   <entry>
     <title><![CDATA[标签]]></title>
@@ -180,8 +180,8 @@
     <content type="text"></content>
   </entry>
   <entry>
-    <title></title>
-    <url>%2Fabout%2Findex.html</url>
-    <content type="text"><![CDATA[联系方式： QQ：549373335 网易：zengguang05@163.com Gmail：zengguang05@gmail.com]]></content>
+    <title><![CDATA[分类]]></title>
+    <url>%2Fcategories%2Findex.html</url>
+    <content type="text"></content>
   </entry>
 </search>

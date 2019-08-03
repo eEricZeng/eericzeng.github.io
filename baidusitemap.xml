@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://eericzeng.github.io/2019/07/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Builder/</loc>
+    <lastmod>2019-08-03</lastmod>
+  </url>  <url>
     <loc>http://eericzeng.github.io/2019/07/31/Eclipse%E6%9F%A5%E7%9C%8Bjar%E5%8C%85%E6%BA%90%E7%A0%81/</loc>
     <lastmod>2019-07-31</lastmod>
   </url>  <url>
@@ -8,9 +11,6 @@
     <lastmod>2019-07-31</lastmod>
   </url>  <url>
     <loc>http://eericzeng.github.io/2019/07/27/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Singleton/</loc>
-    <lastmod>2019-07-31</lastmod>
-  </url>  <url>
-    <loc>http://eericzeng.github.io/2019/07/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-Builder/</loc>
     <lastmod>2019-07-31</lastmod>
   </url>  <url>
     <loc>http://eericzeng.github.io/2019/07/29/CentOS%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7/</loc>
