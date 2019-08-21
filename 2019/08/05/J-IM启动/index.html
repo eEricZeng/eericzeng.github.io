@@ -106,14 +106,14 @@
 
 
   <meta name="description" content="开源社区：Gitee  下载J-IM源码，目前（2019.8.1）最新版本（v2.6.0)的J-IM没有上传到Maven仓库中，需要自己打包。作为一个Java开发人员，我相信你本地安装了Maven而且配置了环境变量。下载源码后进入jim-parent文件夹执行如下命令： 12mvn clean package -U -Dmaven.test.skip=true# Maven命令解释: 打包并跳过">
-<meta name="keywords" content="java,即时通讯,IM,J-IM,t-io">
+<meta name="keywords" content="即时通讯,IM,J-IM,t-io,java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="J-IM启动">
 <meta property="og:url" content="http://eericzeng.github.io/2019/08/05/J-IM启动/index.html">
 <meta property="og:site_name" content="EricZeng">
 <meta property="og:description" content="开源社区：Gitee  下载J-IM源码，目前（2019.8.1）最新版本（v2.6.0)的J-IM没有上传到Maven仓库中，需要自己打包。作为一个Java开发人员，我相信你本地安装了Maven而且配置了环境变量。下载源码后进入jim-parent文件夹执行如下命令： 12mvn clean package -U -Dmaven.test.skip=true# Maven命令解释: 打包并跳过">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-05T13:31:56.015Z">
+<meta property="og:updated_time" content="2019-08-07T13:06:10.511Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="J-IM启动">
 <meta name="twitter:description" content="开源社区：Gitee  下载J-IM源码，目前（2019.8.1）最新版本（v2.6.0)的J-IM没有上传到Maven仓库中，需要自己打包。作为一个Java开发人员，我相信你本地安装了Maven而且配置了环境变量。下载源码后进入jim-parent文件夹执行如下命令： 12mvn clean package -U -Dmaven.test.skip=true# Maven命令解释: 打包并跳过">
@@ -452,13 +452,23 @@
                 
               
 
-              <time title="创建时间：2019-08-05 21:05:55 / 修改时间：21:31:56" itemprop="dateCreated datePublished" datetime="2019-08-05T21:05:55+08:00">2019-08-05</time>
+              <time title="创建时间：2019-08-05 21:05:55" itemprop="dateCreated datePublished" datetime="2019-08-05T21:05:55+08:00">2019-08-05</time>
             </span>
           
 
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-08-07 21:06:10" itemprop="dateModified" datetime="2019-08-07T21:06:10+08:00">2019-08-07</time>
+              </span>
             
           
 
@@ -538,7 +548,7 @@
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-jar-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">archive</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">manifest</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">addClasspath</span>&gt;</span>true<span class="tag">&lt;/<span class="name">addClasspath</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">classpathPrefix</span>&gt;</span>lib/<span class="tag">&lt;/<span class="name">classpathPrefix</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span>org.jim.server.demo.ImServerDemoStart<span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">archive</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-dependency-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>copy-dependencies<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">goal</span>&gt;</span>copy-dependencies<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>$&#123;project.build.directory&#125;/lib<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>再次启动就可以啦：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar java -jar jim-server-demo-2.6.0.v20190114-RELEASE.jar</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar jim-server-demo-2.6.0.v20190114-RELEASE.jar</span><br></pre></td></tr></table></figure>
 
 <p>这样使用有个限制，拷贝jar包时需要带lib文件夹。</p>
 <h3 id="assembly插件"><a href="#assembly插件" class="headerlink" title="assembly插件"></a>assembly插件</h3><p>配置如下：</p>
@@ -603,8 +613,6 @@
         
         <div class="post-tags">
           
-            <a href="/tags/java/" rel="tag"><i class="fa fa-tag"></i> java</a>
-          
             <a href="/tags/即时通讯/" rel="tag"><i class="fa fa-tag"></i> 即时通讯</a>
           
             <a href="/tags/IM/" rel="tag"><i class="fa fa-tag"></i> IM</a>
@@ -612,6 +620,8 @@
             <a href="/tags/J-IM/" rel="tag"><i class="fa fa-tag"></i> J-IM</a>
           
             <a href="/tags/t-io/" rel="tag"><i class="fa fa-tag"></i> t-io</a>
+          
+            <a href="/tags/java/" rel="tag"><i class="fa fa-tag"></i> java</a>
           
         </div>
       
@@ -732,7 +742,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-count">16</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -872,7 +882,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">45</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">48</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

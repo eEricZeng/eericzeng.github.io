@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[带资源的try语句]]></title>
+    <url>%2F2019%2F08%2F21%2F%E5%B8%A6%E8%B5%84%E6%BA%90%E7%9A%84try%E8%AF%AD%E5%8F%A5%2F</url>
+    <content type="text"><![CDATA[语法带资源的try语句，英文try-with-resources，JDK1.7及之后有效： 12345try(/** * 实现了java.io.Closeable接口的资源定义。 */) &#123; // 业务代码&#125; 示例： 12345try (BufferedReader br = new BufferedReader(new FileReader("text.txt")))&#123; // 业务代码&#125; catch (IOException e) &#123; e.printStackTrace();&#125; 与不带资源try的对比如果只有一个资源使用try-with-resources并无太大优势，try/catch/finally则更简洁一点。但是当多个资源同时打开时，就方便太多了，对比如下： try-with-resources 123456try (BufferedReader br1 = new BufferedReader(new FileReader("text1.txt")); BufferedReader br2 = new BufferedReader(new FileReader("text2.txt"))) &#123; // 业务代码&#125; catch (IOException e) &#123; e.printStackTrace();&#125; JDK1.7之前 12345678910111213141516171819202122232425BufferedReader br1 = null;BufferedReader br2 = null;try &#123; br1 = new BufferedReader(new FileReader("text1.txt")); br2 = new BufferedReader(new FileReader("text2.txt")); // 业务代码&#125; catch (IOException e) &#123; e.printStackTrace();&#125; finally &#123; try &#123; if (null != br1) &#123; br1.close(); &#125; &#125; catch (IOException e) &#123; e.printStackTrace(); &#125; finally &#123; try &#123; if (null != br2) &#123; br2.close(); &#125; &#125; catch (IOException e) &#123; e.printStackTrace(); &#125; &#125;&#125; 注意：JDK1.7之前正确关闭的资源是finally和try互相嵌套才能正确关闭，下面这种是错误的： 12345678910111213141516171819BufferedReader br1 = null;BufferedReader br2 = null;try &#123; br1 = new BufferedReader(new FileReader("text1.txt")); br2 = new BufferedReader(new FileReader("text2.txt"));&#125; catch (IOException e) &#123; e.printStackTrace();&#125; finally &#123; try &#123; if (null != br1) &#123; br1.close(); // br1执行close()出现异常，br2就无法关闭了 &#125; if (null != br2) &#123; br2.close(); &#125; &#125; catch (IOException e) &#123; e.printStackTrace(); &#125;&#125; 常见异常之前开发时经常出现一个异常提示如下： 1java.io.IOException: 您的主机中的软件中止了一个已建立的连接 后来发现调用的框架工具中未正确关闭资源，导致连续请求时触发该异常。 参考资料 The Java™ Tutorials]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>try</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[使用IDE远程调试]]></title>
+    <url>%2F2019%2F08%2F21%2F%E4%BD%BF%E7%94%A8IDE%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95%2F</url>
+    <content type="text"><![CDATA[以被调试jar包项目为例，使用IDEA/Eclipse对jar包进行远程调试。 IDEA 版本：IntelliJ IDEA 2019.1.2 (Ultimate Edition) 启动被调试jar包时使用如下命令： 1java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -jar XXX.jar 其中XXX.jar是被调试项目的jar包。打开IDEA，依次点击Run-&gt;Debug Configurations，点击Run/Debug Configurations对话框左上角的“+”号，选择Remote。根据需要修改Host和module如下图所示： 保存配置之后，点击Debug即可。 Eclipse 版本：Eclipse Oxygen 2.2.100.v20170612-0950 启动时使用如下命令： 1java -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8000 -jar XXX.jar 打开Eclipse，依次点击Run-&gt;Debug Configurations，鼠标右击Remote Java Application-&gt;New。如下图所示，表单必填项有Connect中的Project和Host，其余的Name、Port根据需要进行修改，端口号与被调试项目一致即可。 启动Debug运行刚刚创建的“Remote Debug”即可。]]></content>
+      <categories>
+        <category>开发工具</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>开发工具</tag>
+        <tag>eclipse</tag>
+        <tag>IDEA</tag>
+        <tag>debug</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[fastjson自带JsonPath与json-path比较]]></title>
     <url>%2F2019%2F08%2F07%2Ffastjson%E8%87%AA%E5%B8%A6JsonPath%E4%B8%8Ejson-path%E6%AF%94%E8%BE%83%2F</url>
     <content type="text"><![CDATA[场景fastjson从1.2版本开始支持JsonPath语法，但是在部分情境下还是无法很好的支持。例如下面的json结构： 123456789101112131415161718192021222324252627&#123; "store": &#123; "book": [&#123; "title": "Java虚拟机", "price": 20 &#125;, &#123; "title": "Head First 设计模式", "price": 72 &#125;, &#123; "title": "重构：改善既有代码的设计", "isbn": "123", "price": 38 &#125;, &#123; "title": "Spring实践4", "isbn": "321", "price": 32 &#125;, &#123; "title": "图解HTTP", "isbn": "543", "price": 25 &#125;], "bicycle": &#123; "color": "red", "price": 219 &#125; &#125;&#125; 需要取出book中的title和price字段，理想情况是这样的： 12345678910111213141516[&#123; "title": "Java虚拟机", "price": 20&#125;, &#123; "title": "Head First 设计模式", "price": 72&#125;, &#123; "title": "重构：改善既有代码的设计", "price": 38&#125;, &#123; "title": "Spring实践4", "price": 32&#125;, &#123; "title": "图解HTTP", "price": 25&#125;] 测试引入fastjson/json-path版本如下： 12345678910&lt;dependency&gt; &lt;groupId&gt;com.alibaba&lt;/groupId&gt; &lt;artifactId&gt;fastjson&lt;/artifactId&gt; &lt;version&gt;1.2.58&lt;/version&gt;&lt;/dependency&gt;&lt;dependency&gt; &lt;groupId&gt;com.jayway.jsonpath&lt;/groupId&gt; &lt;artifactId&gt;json-path&lt;/artifactId&gt; &lt;version&gt;2.4.0&lt;/version&gt;&lt;/dependency&gt; java代码： 123456789101112131415161718import com.alibaba.fastjson.JSONPath;import com.jayway.jsonpath.JsonPath;public class JsonPathTest &#123; public static void main(String[] args) &#123; String json = "&#123;\"store\": &#123;\"book\": [&#123;\"title\": \"Java虚拟机\",\"price\": 20&#125;, &#123;\"title\": \"Head First 设计模式\",\"price\": 72&#125;, &#123;\"title\": \"重构：改善既有代码的设计\",\"isbn\": \"123\",\"price\": 38&#125;, &#123;\"title\": \"Spring实践4\",\"isbn\": \"321\",\"price\": 32&#125;, &#123;\"title\": \"图解HTTP\",\"isbn\": \"543\",\"price\": 25&#125;],\"bicycle\": &#123;\"color\": \"red\",\"price\": 219&#125;&#125;&#125;"; String jsonPath = "$['store']['book'][:-1]['price','title']"; Object obj = JSONPath.read(json, jsonPath); System.out.println(obj); jsonPath = "$.store.book.[*].['title', 'price']"; obj = JsonPath.parse(json).read(jsonPath); String str = JSONObject.toJSONString(obj); System.out.println(str); &#125;&#125; 测试结果： [[20,72,38,32,25], [&quot;Java虚拟机&quot;,&quot;Head First 设计模式&quot;,&quot;重构：改善既有代码的设计&quot;,&quot;Spring实践4&quot;,&quot;图解HTTP&quot;]] [{&quot;title&quot;:&quot;Java虚拟机&quot;,&quot;price&quot;:20},{&quot;title&quot;:&quot;Head First 设计模式&quot;,&quot;price&quot;:72},{&quot;title&quot;:&quot;重构：改善既有代码的设计&quot;,&quot;price&quot;:38},{&quot;title&quot;:&quot;Spring实践4&quot;,&quot;price&quot;:32},{&quot;title&quot;:&quot;图解HTTP&quot;,&quot;price&quot;:25}]从结果上看json-path可以实现json带list结构的结果筛选，而fastjson只提取了两个列表（也可能我的语法不对，但是以目前的版本，我查了很多资料都没有找到一个更好的语法实现，如果有请联系我）。 参考资料 fastjson对JSONPath的官方教程 Jayway JsonPath GitRepo]]></content>
@@ -16,16 +43,16 @@
   <entry>
     <title><![CDATA[J-IM启动]]></title>
     <url>%2F2019%2F08%2F05%2FJ-IM%E5%90%AF%E5%8A%A8%2F</url>
-    <content type="text"><![CDATA[开源社区：Gitee 下载J-IM源码，目前（2019.8.1）最新版本（v2.6.0)的J-IM没有上传到Maven仓库中，需要自己打包。作为一个Java开发人员，我相信你本地安装了Maven而且配置了环境变量。下载源码后进入jim-parent文件夹执行如下命令： 12mvn clean package -U -Dmaven.test.skip=true# Maven命令解释: 打包并跳过测试类的编译 或者直接双击jim-parent/install.bat，该脚本实际执行如下命令： 12call mvn clean install# 该命令会将打好的包存放到本地Maven仓库里，请悉知 J-IM提供了简单的client/server端演示Demo，当然本文主要关心的是服务端如何启动。该Demo项目名为jim-server-demo，进入该项目的target目录找到刚刚打好的jar包，如：jim-server-demo-2.6.0v20190114-RELEASE.jar。 启动jar包启动的通常做法是执行如下命令： 1java -jar jim-server-demo-2.6.0v20190114-RELEASE.jar 但是执行后会报如下异常： 1jim-server-demo-2.6.0.v20190114-RELEASE.jar中没有主清单属性 打开jar包里的META-INF/MANIFEST.MF文件会发现缺失启动类。解决办法是在pom里添加插件： jar/dependency插件配置如下： 12345678910111213141516171819202122232425262728293031&lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-jar-plugin&lt;/artifactId&gt; &lt;version&gt;2.6&lt;/version&gt; &lt;configuration&gt; &lt;archive&gt; &lt;manifest&gt; &lt;addClasspath&gt;true&lt;/addClasspath&gt; &lt;classpathPrefix&gt;lib/&lt;/classpathPrefix&gt; &lt;mainClass&gt;org.jim.server.demo.ImServerDemoStart&lt;/mainClass&gt; &lt;/manifest&gt; &lt;/archive&gt; &lt;/configuration&gt;&lt;/plugin&gt;&lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-dependency-plugin&lt;/artifactId&gt; &lt;version&gt;2.10&lt;/version&gt; &lt;executions&gt; &lt;execution&gt; &lt;id&gt;copy-dependencies&lt;/id&gt; &lt;phase&gt;package&lt;/phase&gt; &lt;goals&gt; &lt;goal&gt;copy-dependencies&lt;/goal&gt; &lt;/goals&gt; &lt;configuration&gt; &lt;outputDirectory&gt;$&#123;project.build.directory&#125;/lib&lt;/outputDirectory&gt; &lt;/configuration&gt; &lt;/execution&gt; &lt;/executions&gt;&lt;/plugin&gt; 再次启动就可以啦： 1java -jar java -jar jim-server-demo-2.6.0.v20190114-RELEASE.jar 这样使用有个限制，拷贝jar包时需要带lib文件夹。 assembly插件配置如下： 1234567891011121314151617181920212223&lt;plugin&gt; &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt; &lt;configuration&gt; &lt;archive&gt; &lt;manifest&gt; &lt;mainClass&gt;org.jim.server.demo.ImServerDemoStart&lt;/mainClass&gt; &lt;/manifest&gt; &lt;/archive&gt; &lt;descriptorRefs&gt; &lt;descriptorRef&gt;jar-with-dependencies&lt;/descriptorRef&gt; &lt;/descriptorRefs&gt; &lt;/configuration&gt; &lt;!--下面是为了使用 mvn package命令，如果不加则使用mvn assembly--&gt; &lt;executions&gt; &lt;execution&gt; &lt;id&gt;make-assemble&lt;/id&gt; &lt;phase&gt;package&lt;/phase&gt; &lt;goals&gt; &lt;goal&gt;single&lt;/goal&gt; &lt;/goals&gt; &lt;/execution&gt; &lt;/executions&gt;&lt;/plugin&gt; mvn打包后生成jim-server-demo-2.6.0.v20190114-RELEASE.jar和jim-server-demo-2.6.0.v20190114-RELEASE-jar-with-dependencies.jar两个jar包，后面那个包将依赖的jar一起打包，任何位置直接使用java -jar即可。 IDE启动直接启动main方法。 SpringBoot集成J-IM启动类继承org.springframework.boot.CommandLineRunner接口，实现run()方法: 1234567public class JimStarter implements CommandLineRunner &#123; @Override public void run(String... args) &#123; // J-IM启动代码 &#125;&#125; 参考资料 jar包中META-INF文件作用 java -cp &amp; java jar的区别]]></content>
+    <content type="text"><![CDATA[开源社区：Gitee 下载J-IM源码，目前（2019.8.1）最新版本（v2.6.0)的J-IM没有上传到Maven仓库中，需要自己打包。作为一个Java开发人员，我相信你本地安装了Maven而且配置了环境变量。下载源码后进入jim-parent文件夹执行如下命令： 12mvn clean package -U -Dmaven.test.skip=true# Maven命令解释: 打包并跳过测试类的编译 或者直接双击jim-parent/install.bat，该脚本实际执行如下命令： 12call mvn clean install# 该命令会将打好的包存放到本地Maven仓库里，请悉知 J-IM提供了简单的client/server端演示Demo，当然本文主要关心的是服务端如何启动。该Demo项目名为jim-server-demo，进入该项目的target目录找到刚刚打好的jar包，如：jim-server-demo-2.6.0v20190114-RELEASE.jar。 启动jar包启动的通常做法是执行如下命令： 1java -jar jim-server-demo-2.6.0v20190114-RELEASE.jar 但是执行后会报如下异常： 1jim-server-demo-2.6.0.v20190114-RELEASE.jar中没有主清单属性 打开jar包里的META-INF/MANIFEST.MF文件会发现缺失启动类。解决办法是在pom里添加插件： jar/dependency插件配置如下： 12345678910111213141516171819202122232425262728293031&lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-jar-plugin&lt;/artifactId&gt; &lt;version&gt;2.6&lt;/version&gt; &lt;configuration&gt; &lt;archive&gt; &lt;manifest&gt; &lt;addClasspath&gt;true&lt;/addClasspath&gt; &lt;classpathPrefix&gt;lib/&lt;/classpathPrefix&gt; &lt;mainClass&gt;org.jim.server.demo.ImServerDemoStart&lt;/mainClass&gt; &lt;/manifest&gt; &lt;/archive&gt; &lt;/configuration&gt;&lt;/plugin&gt;&lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-dependency-plugin&lt;/artifactId&gt; &lt;version&gt;2.10&lt;/version&gt; &lt;executions&gt; &lt;execution&gt; &lt;id&gt;copy-dependencies&lt;/id&gt; &lt;phase&gt;package&lt;/phase&gt; &lt;goals&gt; &lt;goal&gt;copy-dependencies&lt;/goal&gt; &lt;/goals&gt; &lt;configuration&gt; &lt;outputDirectory&gt;$&#123;project.build.directory&#125;/lib&lt;/outputDirectory&gt; &lt;/configuration&gt; &lt;/execution&gt; &lt;/executions&gt;&lt;/plugin&gt; 再次启动就可以啦： 1java -jar jim-server-demo-2.6.0.v20190114-RELEASE.jar 这样使用有个限制，拷贝jar包时需要带lib文件夹。 assembly插件配置如下： 1234567891011121314151617181920212223&lt;plugin&gt; &lt;artifactId&gt;maven-assembly-plugin&lt;/artifactId&gt; &lt;configuration&gt; &lt;archive&gt; &lt;manifest&gt; &lt;mainClass&gt;org.jim.server.demo.ImServerDemoStart&lt;/mainClass&gt; &lt;/manifest&gt; &lt;/archive&gt; &lt;descriptorRefs&gt; &lt;descriptorRef&gt;jar-with-dependencies&lt;/descriptorRef&gt; &lt;/descriptorRefs&gt; &lt;/configuration&gt; &lt;!--下面是为了使用 mvn package命令，如果不加则使用mvn assembly--&gt; &lt;executions&gt; &lt;execution&gt; &lt;id&gt;make-assemble&lt;/id&gt; &lt;phase&gt;package&lt;/phase&gt; &lt;goals&gt; &lt;goal&gt;single&lt;/goal&gt; &lt;/goals&gt; &lt;/execution&gt; &lt;/executions&gt;&lt;/plugin&gt; mvn打包后生成jim-server-demo-2.6.0.v20190114-RELEASE.jar和jim-server-demo-2.6.0.v20190114-RELEASE-jar-with-dependencies.jar两个jar包，后面那个包将依赖的jar一起打包，任何位置直接使用java -jar即可。 IDE启动直接启动main方法。 SpringBoot集成J-IM启动类继承org.springframework.boot.CommandLineRunner接口，实现run()方法: 1234567public class JimStarter implements CommandLineRunner &#123; @Override public void run(String... args) &#123; // J-IM启动代码 &#125;&#125; 参考资料 jar包中META-INF文件作用 java -cp &amp; java jar的区别]]></content>
       <categories>
         <category>即时通讯</category>
       </categories>
       <tags>
-        <tag>java</tag>
         <tag>即时通讯</tag>
         <tag>IM</tag>
         <tag>J-IM</tag>
         <tag>t-io</tag>
+        <tag>java</tag>
       </tags>
   </entry>
   <entry>
@@ -36,12 +63,12 @@
         <category>开发工具</category>
       </categories>
       <tags>
+        <tag>java</tag>
         <tag>开发工具</tag>
         <tag>eclipse</tag>
         <tag>源码</tag>
         <tag>jar</tag>
         <tag>decomplier</tag>
-        <tag>java</tag>
       </tags>
   </entry>
   <entry>
@@ -64,10 +91,10 @@
         <category>设计模式</category>
       </categories>
       <tags>
-        <tag>设计模式</tag>
         <tag>java</tag>
-        <tag>pattern</tag>
+        <tag>设计模式</tag>
         <tag>singleton</tag>
+        <tag>pattern</tag>
       </tags>
   </entry>
   <entry>
@@ -78,16 +105,16 @@
         <category>设计模式</category>
       </categories>
       <tags>
-        <tag>设计模式</tag>
         <tag>java</tag>
-        <tag>builder</tag>
+        <tag>设计模式</tag>
         <tag>pattern</tag>
+        <tag>builder</tag>
       </tags>
   </entry>
   <entry>
     <title><![CDATA[Github上fork项目更新]]></title>
     <url>%2F2019%2F07%2F22%2FGithub%E4%B8%8Afork%E9%A1%B9%E7%9B%AE%E6%9B%B4%E6%96%B0%2F</url>
-    <content type="text"><![CDATA[场景：很早之前fork了github/gitee/gitlab等等的项目，但是项目经过多次迭代提交了更多更新，而自己账号下面被fork过来的项目并没有及时更新。此时，需要把提交过的内容更新到自己账号下的远程分支上。以我自己fork过的一个项目为例，主要分添加上游仓库和同步两个步骤。 添加上游仓库查看远程分支状态： 1git remove -v 添加需要同步的上游仓库： 1git remote add upstream https://github.com/tywo45/t-io 再次查看远程状态： 12345$ git remote -vorigin git@github.com:eEricZeng/t-io.git (fetch)origin git@github.com:eEricZeng/t-io.git (push)upstream https://github.com/tywo45/t-io (fetch)upstream https://github.com/tywo45/t-io (push) 同步将上游仓库内容拉到本地： 1git fetch upstream 此时，并没有将上游仓库的内容合并到本地中，可以使用status查看，也可以对比更新： 1git diff master upstream/master --stat 若要同步哪个分支就切换到对应的分支，例如master分支： 1git checkout master 同步并推送到自己账号下的远程分支，这里的同步本质是把upstream中master分支的内容合并到当前的master分支中： 12git merge upstream/mastergit push origin master]]></content>
+    <content type="text"><![CDATA[场景：很早之前fork了github/gitee/gitlab等等的项目，但是项目经过多次迭代提交了更多更新，而自己账号下面被fork过来的项目并没有及时更新。此时，需要把提交过的内容更新到自己账号下的远程分支上。以我自己fork过的一个项目为例，主要分添加上游仓库和同步两个步骤。 添加上游仓库查看远程分支状态： 1git remote -v 添加需要同步的上游仓库： 1git remote add upstream https://github.com/tywo45/t-io 再次查看远程状态： 12345$ git remote -vorigin git@github.com:eEricZeng/t-io.git (fetch)origin git@github.com:eEricZeng/t-io.git (push)upstream https://github.com/tywo45/t-io (fetch)upstream https://github.com/tywo45/t-io (push) 同步将上游仓库内容拉到本地： 1git fetch upstream 此时，并没有将上游仓库的内容合并到本地中，可以使用status查看，也可以对比更新： 1git diff master upstream/master --stat 若要同步哪个分支就切换到对应的分支，例如master分支： 1git checkout master 同步并推送到自己账号下的远程分支，这里的同步本质是把upstream中master分支的内容合并到当前的master分支中： 12git merge upstream/mastergit push origin master]]></content>
       <categories>
         <category>git</category>
       </categories>
@@ -198,9 +225,9 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[分类]]></title>
-    <url>%2Fcategories%2Findex.html</url>
-    <content type="text"></content>
+    <title></title>
+    <url>%2Fabout%2Findex.html</url>
+    <content type="text"><![CDATA[联系方式： QQ：549373335 网易：zengguang05@163.com Gmail：zengguang05@gmail.com]]></content>
   </entry>
   <entry>
     <title><![CDATA[标签]]></title>
@@ -208,8 +235,8 @@
     <content type="text"></content>
   </entry>
   <entry>
-    <title></title>
-    <url>%2Fabout%2Findex.html</url>
-    <content type="text"><![CDATA[联系方式： QQ：549373335 网易：zengguang05@163.com Gmail：zengguang05@gmail.com]]></content>
+    <title><![CDATA[分类]]></title>
+    <url>%2Fcategories%2Findex.html</url>
+    <content type="text"></content>
   </entry>
 </search>
