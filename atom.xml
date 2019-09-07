@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://eericzeng.github.io/"/>
-  <updated>2019-08-26T14:50:29.201Z</updated>
+  <updated>2019-09-07T14:25:44.773Z</updated>
   <id>http://eericzeng.github.io/</id>
   
   <author>
@@ -15,6 +15,72 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>单元测试IllegalStateException问题</title>
+    <link href="http://eericzeng.github.io/2019/09/07/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95IllegalStateException%E9%97%AE%E9%A2%98/"/>
+    <id>http://eericzeng.github.io/2019/09/07/单元测试IllegalStateException问题/</id>
+    <published>2019-09-07T14:25:44.000Z</published>
+    <updated>2019-09-07T14:25:44.773Z</updated>
+    
+    <content type="html"><![CDATA[<p>该文是解决IllegalState Failed to load ApplicationContext异常中的一种。</p><h2 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h2><ul><li>spring-web-4.3.6.RELEASE</li><li>Junit v4.12</li><li>h2 v1.4.192</li><li>Run As单元测试类，全部测试用例可以通过</li><li>mvn test部分测试类下面所有的测试用例都报错</li></ul><p>mvn test报错信息如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line">testMethod(io.github.eericzeng.StudentTest) Time elapsed: 0 sec  &lt;&lt;&lt; ERROR!</span><br><span class="line">java.lang.IllegalStateException: Failed to load ApplicationContext</span><br><span class="line">        at org.h2.message.DbException.getJdbcSQLException(DbException.java:345)</span><br><span class="line">        at org.h2.message.DbException.get(DbException.java:179)</span><br><span class="line">        at org.h2.message.DbException.get(DbException.java:155)</span><br><span class="line">        at org.h2.command.ddl.CreateTable.update(CreateTable.java:115)</span><br><span class="line">        at org.h2.command.CommandContainer.update(CommandContainer.java:98)</span><br><span class="line">        at org.h2.command.Command.executeUpdate(Command.java:258)</span><br><span class="line">        at org.h2.jdbc.JdbcStatement.executeInternal(JdbcStatement.java:184)</span><br><span class="line">        at org.h2.jdbc.JdbcStatement.execute(JdbcStatement.java:158)</span><br><span class="line">        at org.springframework.jdbc.datasource.init.ScriptUtils.executeSqlScript(ScriptUtils.java:471)</span><br><span class="line">        at org.springframework.jdbc.datasource.init.ResourceDatabasePopulator.populate(ResourceDatabasePopulator.java:238)</span><br><span class="line">        at org.springframework.jdbc.datasource.init.CompositeDatabasePopulator.populate(CompositeDatabasePopulator.java:87)</span><br><span class="line">        at org.springframework.jdbc.datasource.init.DatabasePopulatorUtils.execute(DatabasePopulatorUtils.java:48)</span><br><span class="line">        at org.springframework.jdbc.datasource.init.DataSourceInitializer.execute(DataSourceInitializer.java:108)</span><br><span class="line">        at org.springframework.jdbc.datasource.init.DataSourceInitializer.afterPropertiesSet(DataSourceInitializer.java:93)</span><br><span class="line">        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java</span><br><span class="line">:1687)</span><br><span class="line">        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:16</span><br><span class="line">24)</span><br><span class="line">        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:555)</span><br><span class="line"></span><br><span class="line">        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)</span><br><span class="line">        at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)</span><br><span class="line">        at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)</span><br><span class="line">        at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)</span><br><span class="line">        at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)</span><br><span class="line">        at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:761)</span><br><span class="line">        at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:866)</span><br><span class="line">        at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)</span><br><span class="line">        at org.springframework.test.context.web.AbstractGenericWebContextLoader.loadContext(AbstractGenericWebContextLoader.java:134)</span><br><span class="line">        at org.springframework.test.context.web.AbstractGenericWebContextLoader.loadContext(AbstractGenericWebContextLoader.java:61)</span><br><span class="line">        at org.springframework.test.context.support.AbstractDelegatingSmartContextLoader.delegateLoading(AbstractDelegatingSmartContextLoader.jav</span><br><span class="line">a:108)</span><br><span class="line">        at org.springframework.test.context.support.AbstractDelegatingSmartContextLoader.loadContext(AbstractDelegatingSmartContextLoader.java:25</span><br><span class="line">1)</span><br><span class="line">        at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContextInternal(DefaultCacheAwareContextLoaderDelega</span><br><span class="line">te.java:98)</span><br><span class="line">        at org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate.loadContext(DefaultCacheAwareContextLoaderDelegate.java:</span><br><span class="line">116)</span><br><span class="line">        at org.springframework.test.context.support.DefaultTestContext.getApplicationContext(DefaultTestContext.java:83)</span><br><span class="line">        at org.springframework.test.context.web.ServletTestExecutionListener.setUpRequestContextIfNecessary(ServletTestExecutionListener.java:189</span><br><span class="line">)</span><br><span class="line">        at org.springframework.test.context.web.ServletTestExecutionListener.prepareTestInstance(ServletTestExecutionListener.java:131)</span><br><span class="line">        at org.springframework.test.context.TestContextManager.prepareTestInstance(TestContextManager.java:230)</span><br><span class="line">        at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.createTest(SpringJUnit4ClassRunner.java:228)</span><br><span class="line">        at org.springframework.test.context.junit4.SpringJUnit4ClassRunner$1.runReflectiveCall(SpringJUnit4ClassRunner.java:287)</span><br><span class="line">        at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)</span><br><span class="line">        at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.methodBlock(SpringJUnit4ClassRunner.java:289)</span><br><span class="line">        at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:247)</span><br><span class="line">        at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:94)</span><br><span class="line">        at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)</span><br><span class="line">        at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)</span><br><span class="line">        at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)</span><br><span class="line">        at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)</span><br><span class="line">        at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)</span><br><span class="line">        at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)</span><br><span class="line">        at org.springframework.test.context.junit4.statements.RunBeforeTestClassCallbacks.evaluate(RunBeforeTestClassCallbacks.java:61)</span><br><span class="line">        at org.springframework.test.context.junit4.statements.RunAfterTestClassCallbacks.evaluate(RunAfterTestClassCallbacks.java:70)</span><br><span class="line">        at org.junit.runners.ParentRunner.run(ParentRunner.java:363)</span><br><span class="line">        at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.run(SpringJUnit4ClassRunner.java:191)</span><br><span class="line">        at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:264)</span><br><span class="line">        at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)</span><br><span class="line">        at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:124)</span><br><span class="line">        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</span><br><span class="line">        at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)</span><br><span class="line">        at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</span><br><span class="line">        at java.lang.reflect.Method.invoke(Method.java:498)</span><br><span class="line">        at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray2(ReflectionUtils.java:208)</span><br><span class="line">        at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:158)</span><br><span class="line">        at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:86)</span><br><span class="line">        at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)</span><br><span class="line">        at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:95)</span><br><span class="line"></span><br><span class="line">Results :</span><br><span class="line"></span><br><span class="line">Tests in error:</span><br><span class="line">   ? IllegalState Failed to load ApplicationContext</span><br></pre></td></tr></table></figure><h2 id="异常排查"><a href="#异常排查" class="headerlink" title="异常排查"></a>异常排查</h2><p>由异常信息getJdbcSQLException/ApplicationContext推断出配置信息有问题，而且是关于数据库的异常，getJdbcSQLException是h2抛出的，说明h2在初始化就存在问题。配置单元测试log4j日志，log4j日志关键信息如下：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Caused by: org.h2.jdbc.JdbcSQLException: Table &quot;student&quot; already exists; SQL statement:</span><br></pre></td></tr></table></figure><p>执行SQL创建数据表失败，说明建表语句被执行了多次。检查SQL脚本发现，脚本中只有创建数据表的语句，并没有DROP语句，所以每次执行测试用例时都会失败。</p><h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><p>根据本次异常排查情况，在CREATE TABLE前添加如下SQL语句：</p><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">'student'</span>;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;该文是解决IllegalState Failed to load ApplicationContext异常中的一种。&lt;/p&gt;
+&lt;h2 id=&quot;背景介绍&quot;&gt;&lt;a href=&quot;#背景介绍&quot; class=&quot;headerlink&quot; title=&quot;背景介绍&quot;&gt;&lt;/a&gt;背景介绍&lt;/h2
+      
+    
+    </summary>
+    
+      <category term="java" scheme="http://eericzeng.github.io/categories/java/"/>
+    
+    
+      <category term="java" scheme="http://eericzeng.github.io/tags/java/"/>
+    
+      <category term="单元测试" scheme="http://eericzeng.github.io/tags/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/"/>
+    
+      <category term="junit" scheme="http://eericzeng.github.io/tags/junit/"/>
+    
+      <category term="h2" scheme="http://eericzeng.github.io/tags/h2/"/>
+    
+      <category term="IllegalStateException" scheme="http://eericzeng.github.io/tags/IllegalStateException/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CentOS7服务开机自动启动</title>
+    <link href="http://eericzeng.github.io/2019/09/07/CentOS7%E6%9C%8D%E5%8A%A1%E5%BC%80%E6%9C%BA%E8%87%AA%E5%8A%A8%E5%90%AF%E5%8A%A8/"/>
+    <id>http://eericzeng.github.io/2019/09/07/CentOS7服务开机自动启动/</id>
+    <published>2019-09-07T13:44:57.000Z</published>
+    <updated>2019-09-07T13:45:19.804Z</updated>
+    
+    <content type="html"><![CDATA[<p>专治健忘症</p><p>以Apache HTTP服务为例：</p><h3 id="添加开机启动"><a href="#添加开机启动" class="headerlink" title="添加开机启动"></a>添加开机启动</h3><p>开机启动http服务</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> httpd</span><br></pre></td></tr></table></figure><p>添加手动安装的服务，如nginx，可参考<a href="https://www.jianshu.com/p/ca5ee5f7075c" title="CentOS7设置nginx开机自启动" target="_blank" rel="noopener">该文</a>。</p><h3 id="删除开机启动"><a href="#删除开机启动" class="headerlink" title="删除开机启动"></a>删除开机启动</h3><p>删除开机启动http服务</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">disable</span> httpd</span><br></pre></td></tr></table></figure><h3 id="查看所有开机启动的服务"><a href="#查看所有开机启动的服务" class="headerlink" title="查看所有开机启动的服务"></a>查看所有开机启动的服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl list-unit-files | grep enabled</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;专治健忘症&lt;/p&gt;
+&lt;p&gt;以Apache HTTP服务为例：&lt;/p&gt;
+&lt;h3 id=&quot;添加开机启动&quot;&gt;&lt;a href=&quot;#添加开机启动&quot; class=&quot;headerlink&quot; title=&quot;添加开机启动&quot;&gt;&lt;/a&gt;添加开机启动&lt;/h3&gt;&lt;p&gt;开机启动http服务&lt;/p&gt;
+&lt;
+      
+    
+    </summary>
+    
+      <category term="CentOS" scheme="http://eericzeng.github.io/categories/CentOS/"/>
+    
+    
+      <category term="CentOS" scheme="http://eericzeng.github.io/tags/CentOS/"/>
+    
+      <category term="笔记" scheme="http://eericzeng.github.io/tags/%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="systemctl" scheme="http://eericzeng.github.io/tags/systemctl/"/>
+    
+  </entry>
   
   <entry>
     <title>BeanUtils拷贝Map、JSONObject中的枚举、POJO属性</title>
@@ -105,13 +171,13 @@
     
       <category term="java" scheme="http://eericzeng.github.io/tags/java/"/>
     
+      <category term="开发工具" scheme="http://eericzeng.github.io/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"/>
+    
       <category term="eclipse" scheme="http://eericzeng.github.io/tags/eclipse/"/>
     
       <category term="IDEA" scheme="http://eericzeng.github.io/tags/IDEA/"/>
     
       <category term="debug" scheme="http://eericzeng.github.io/tags/debug/"/>
-    
-      <category term="开发工具" scheme="http://eericzeng.github.io/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"/>
     
   </entry>
   
@@ -203,9 +269,9 @@
     
       <category term="java" scheme="http://eericzeng.github.io/tags/java/"/>
     
-      <category term="eclipse" scheme="http://eericzeng.github.io/tags/eclipse/"/>
-    
       <category term="开发工具" scheme="http://eericzeng.github.io/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"/>
+    
+      <category term="eclipse" scheme="http://eericzeng.github.io/tags/eclipse/"/>
     
       <category term="源码" scheme="http://eericzeng.github.io/tags/%E6%BA%90%E7%A0%81/"/>
     
