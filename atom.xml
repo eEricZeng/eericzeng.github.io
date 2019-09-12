@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://eericzeng.github.io/"/>
-  <updated>2019-09-12T10:50:21.078Z</updated>
+  <updated>2019-09-12T10:57:28.484Z</updated>
   <id>http://eericzeng.github.io/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>md5和sh1文件完整性校验</title>
-    <link href="http://eericzeng.github.io/2019/09/12/md5%E5%92%8Csh1%E6%96%87%E4%BB%B6%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A0%A1%E9%AA%8C/"/>
-    <id>http://eericzeng.github.io/2019/09/12/md5和sh1文件完整性校验/</id>
+    <title>md5和sha1文件完整性校验</title>
+    <link href="http://eericzeng.github.io/2019/09/12/md5%E5%92%8Csha1%E6%96%87%E4%BB%B6%E5%AE%8C%E6%95%B4%E6%80%A7%E6%A0%A1%E9%AA%8C/"/>
+    <id>http://eericzeng.github.io/2019/09/12/md5和sha1文件完整性校验/</id>
     <published>2019-09-12T10:49:12.000Z</published>
-    <updated>2019-09-12T10:50:21.078Z</updated>
+    <updated>2019-09-12T10:57:28.484Z</updated>
     
     <content type="html"><![CDATA[<p>简单而强大的命令：md5sum/sha1sum。</p><h2 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h2><p>下载多个大文件，中间网络出现过多次断点续传、下载工具报错等问题，自己也不知道文件到底是否是完整的，依次比较是否下载完所有文件略显费力。官方提供了md5/sha1文件完整性校验码，如何使用这两个文件进行校验是本文的目的。</p><h2 id="md5sum校验"><a href="#md5sum校验" class="headerlink" title="md5sum校验"></a>md5sum校验</h2><p>md5sum是Linux系统自带的命令，windows系统安装了bash shell也可以使用该命令。将校验文件md5sums.txt复制到下载的文件同级目录下，只需执行如下命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">md5sum -c md5sums.txt</span><br></pre></td></tr></table></figure><p>执行结果示例如下：</p><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">file1.zip: OK</span><br><span class="line">file2.zip: OK</span><br><span class="line">file3.zip: OK</span><br><span class="line">file4.zip: FAILED</span><br></pre></td></tr></table></figure><p>说明：-c参数为–check的缩写，意思是从文件中读取md5校验码并校验文件中指定文件。OK代表校验通过，FAILED代表文件不完整。</p><h2 id="生成md5校验码"><a href="#生成md5校验码" class="headerlink" title="生成md5校验码"></a>生成md5校验码</h2><p>当我们共享给其他人文件资源时，也可以自己生成md5校验码供其他用户校验。生成md5校验码命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">md5sum *.zip &gt; md5sums.txt</span><br></pre></td></tr></table></figure><p>该命令会给当前目录下的每一个zip文件生成一个对应的md5校验码，文件内容示例如下：</p><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">d934615427115004a17771afc9d294e7 file1.zip</span><br><span class="line">74cf07ce15cdf3f0639d69093661c26a file2.zip</span><br><span class="line">d3dc5b39344a8f861741398e8ecb96fd file3.zip</span><br><span class="line">ff7922f5c3b02c2cf99203912660e735 file3.zip</span><br></pre></td></tr></table></figure><p>sha1sum命令与md5sum类似，因此不再赘述。</p>]]></content>
     
@@ -391,9 +391,9 @@
     
       <category term="设计模式" scheme="http://eericzeng.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
-      <category term="pattern" scheme="http://eericzeng.github.io/tags/pattern/"/>
-    
       <category term="singleton" scheme="http://eericzeng.github.io/tags/singleton/"/>
+    
+      <category term="pattern" scheme="http://eericzeng.github.io/tags/pattern/"/>
     
   </entry>
   
@@ -422,9 +422,9 @@
     
       <category term="设计模式" scheme="http://eericzeng.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
-      <category term="builder" scheme="http://eericzeng.github.io/tags/builder/"/>
-    
       <category term="pattern" scheme="http://eericzeng.github.io/tags/pattern/"/>
+    
+      <category term="builder" scheme="http://eericzeng.github.io/tags/builder/"/>
     
   </entry>
   
