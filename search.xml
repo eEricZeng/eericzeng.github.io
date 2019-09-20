@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[jvisualvm远程连接Tomcat]]></title>
+    <url>%2F2019%2F09%2F20%2Fjvisualvm%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5Tomcat%2F</url>
+    <content type="text"><![CDATA[jvisualvm远程连接有两种方式：jmx和jstatd。 JMX需要在服务器上修改Tomcat的启动参数，打开$TOMCAT_HOME/bin/catalina.sh，在文件中添加如下参数： 1234567JAVA_OPTS="$JAVA_OPTS-Dcom.sun.management.jmxremote-Dcom.sun.management.jmxremote.port=8777-Dcom.sun.management.jmxremote.rmi.port=8777-Dcom.sun.management.jmxremote.authenticate=false-Dcom.sun.management.jmxremote.ssl=false-Djava.rmi.server.hostname=192.168.1.110" 其中，192.168.1.110是部署Tomcat的服务器地址。然后我们在本地启动jvisualvm，右击导航栏的“远程”-&gt;”添加远程主机”，输入远程主机IP——以“192.168.1.110”为例，右击远程主机“192.168.1.110”-&gt;“添加JMX连接”，输入端口号8777，勾选不要求SSL连接，这里没有使用安全凭证，因此也不需要勾选安全凭证，点击“确定”进行连接。 然而，如果JMX没有缺点也就不需要使用第二种方法了。JMX无法使用VisualGC插件，这个真的无法忍受，只能用下面这种方法进行连接。 jstatdjstatd需要JDK1.8，低版本的可能没有这个工具。运行jstatd命令需要开放权限，创建安全策略文件如下： 123cd $TOMCAT_HOME/touch jstatd.all.policyvim jstatd.all.policy 添加如下内容： grant codebase &quot;file:${java.home}/../lib/tools.jar&quot; { permission java.security.AllPermission; };运行jstatd工具： jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostanme=192.168.1.110 &amp;以上默认端口是1099，若需要修改可以添加-p参数进行制定。 好了，可以本地打开jvisualvm远程连接一下192.168.1.110，VisualGC可以正常使用，神奇的是CPU监控显示“不受此JVM支持”（手动愣住(°ー°〃)），这就是为什么会有两种方法同时存在？！！！]]></content>
+      <categories>
+        <category>java</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>jvm</tag>
+        <tag>jvisualvm</tag>
+        <tag>jmx</tag>
+        <tag>jstatd</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[多台服务器时钟同步]]></title>
     <url>%2F2019%2F09%2F17%2F%E5%A4%9A%E5%8F%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%B6%E9%92%9F%E5%90%8C%E6%AD%A5%2F</url>
     <content type="text"><![CDATA[背景介绍当所有应用在都集中在同一台服务器上，我们可能感受不到时钟同步的重要性。然而，一旦进行分布式部署时，始终未同步就会带来许多莫名其妙的问题，比如认证服务器时钟滞后应用服务器，进行OAuth 2认证时即使拿到认证码也是无效的；认证服务器时钟大幅超前又会出现session过期的问题；还有时钟不同步代理的业务逻辑问题等。 NTPNTP全称Network Time Protoco，网络时间协议。 安装1yum install -y ntp 配置1vim /etc/ntp.conf 配置文件ntp.conf中包含了默认的配置，我们只需根据自己的环境做适当的修改，如启用同步限制： 1restrict default nomodify notrap nopeer noquery 服务端对于服务端需要设置server同步标准时间，若服务位于内网无法访问外部网络，只能使用本地时间，添加如下配置： 1server 127.127.1.0 iburst local clock 注意： 若未添加本地时间且不可访问外部时间，客户端会报no server suitable for synchronization found错误。启动ntp服务： 1service ntpd start 客户端发送如下命令进行同步： 1ntpdate [ntp server ip] 成功响应会出现如下响应： 116 Sep 21:37:00 ntpdate[28240]: adjust time server [ntp server ip] offset 0.009964 sec 同步失败响应： 116 Sep 21:36:47 ntpdate[28239]: no server suitable for synchronization found 同步失败排查： 服务端ntpd服务是否启动 服务端防火墙是否拦截123端口 服务启动后客户端需要等待一段时间后再进行同步 检查服务端配置文件ntp.conf 参考资料 网络时间协议]]></content>
@@ -102,10 +117,10 @@
       </categories>
       <tags>
         <tag>java</tag>
-        <tag>开发工具</tag>
         <tag>eclipse</tag>
         <tag>IDEA</tag>
         <tag>debug</tag>
+        <tag>开发工具</tag>
       </tags>
   </entry>
   <entry>
@@ -145,8 +160,8 @@
       </categories>
       <tags>
         <tag>java</tag>
-        <tag>开发工具</tag>
         <tag>eclipse</tag>
+        <tag>开发工具</tag>
         <tag>源码</tag>
         <tag>jar</tag>
         <tag>decomplier</tag>
@@ -174,8 +189,8 @@
       <tags>
         <tag>java</tag>
         <tag>设计模式</tag>
-        <tag>singleton</tag>
         <tag>pattern</tag>
+        <tag>singleton</tag>
       </tags>
   </entry>
   <entry>
@@ -188,8 +203,8 @@
       <tags>
         <tag>java</tag>
         <tag>设计模式</tag>
-        <tag>pattern</tag>
         <tag>builder</tag>
+        <tag>pattern</tag>
       </tags>
   </entry>
   <entry>
@@ -306,14 +321,14 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>%2Fabout%2Findex.html</url>
-    <content type="text"><![CDATA[联系方式： QQ：549373335 网易：zengguang05@163.com Gmail：zengguang05@gmail.com]]></content>
-  </entry>
-  <entry>
     <title><![CDATA[分类]]></title>
     <url>%2Fcategories%2Findex.html</url>
     <content type="text"></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>%2Fabout%2Findex.html</url>
+    <content type="text"><![CDATA[联系方式： QQ：549373335 网易：zengguang05@163.com Gmail：zengguang05@gmail.com]]></content>
   </entry>
   <entry>
     <title><![CDATA[标签]]></title>

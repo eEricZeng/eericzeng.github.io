@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://eericzeng.github.io/"/>
-  <updated>2019-09-17T13:13:55.540Z</updated>
+  <updated>2019-09-20T11:03:45.549Z</updated>
   <id>http://eericzeng.github.io/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>jvisualvm远程连接Tomcat</title>
+    <link href="http://eericzeng.github.io/2019/09/20/jvisualvm%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5Tomcat/"/>
+    <id>http://eericzeng.github.io/2019/09/20/jvisualvm远程连接Tomcat/</id>
+    <published>2019-09-20T11:03:45.000Z</published>
+    <updated>2019-09-20T11:03:45.549Z</updated>
+    
+    <content type="html"><![CDATA[<p>jvisualvm远程连接有两种方式：jmx和jstatd。</p><h2 id="JMX"><a href="#JMX" class="headerlink" title="JMX"></a>JMX</h2><p>需要在服务器上修改Tomcat的启动参数，打开$TOMCAT_HOME/bin/catalina.sh，在文件中添加如下参数：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=<span class="string">"<span class="variable">$JAVA_OPTS</span></span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.port=8777</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.rmi.port=8777</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.authenticate=false</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.ssl=false</span></span><br><span class="line"><span class="string">-Djava.rmi.server.hostname=192.168.1.110"</span></span><br></pre></td></tr></table></figure><p>其中，192.168.1.110是部署Tomcat的服务器地址。然后我们在本地启动jvisualvm，右击导航栏的“远程”-&gt;”添加远程主机”，输入远程主机IP——以“192.168.1.110”为例，右击远程主机“192.168.1.110”-&gt;“添加JMX连接”，输入端口号8777，勾选不要求SSL连接，这里没有使用安全凭证，因此也不需要勾选安全凭证，点击“确定”进行连接。</p><p><strong>然而</strong>，如果JMX没有缺点也就不需要使用第二种方法了。JMX无法使用VisualGC插件，这个真的无法忍受，只能用下面这种方法进行连接。</p><h2 id="jstatd"><a href="#jstatd" class="headerlink" title="jstatd"></a>jstatd</h2><p>jstatd需要JDK1.8，低版本的可能没有这个工具。运行jstatd命令需要开放权限，创建安全策略文件如下：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="variable">$TOMCAT_HOME</span>/</span><br><span class="line">touch jstatd.all.policy</span><br><span class="line">vim jstatd.all.policy</span><br></pre></td></tr></table></figure><p>添加如下内容：</p><pre><code>grant codebase &quot;file:${java.home}/../lib/tools.jar&quot; {    permission java.security.AllPermission;};</code></pre><p>运行jstatd工具：</p><pre><code>jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostanme=192.168.1.110 &amp;</code></pre><p>以上默认端口是1099，若需要修改可以添加-p参数进行制定。</p><p>好了，可以本地打开jvisualvm远程连接一下192.168.1.110，VisualGC可以正常使用，神奇的是CPU监控显示“<strong>不受此JVM支持</strong>”（手动愣住(°ー°〃)），这就是为什么会有两种方法同时存在？！！！</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;jvisualvm远程连接有两种方式：jmx和jstatd。&lt;/p&gt;
+&lt;h2 id=&quot;JMX&quot;&gt;&lt;a href=&quot;#JMX&quot; class=&quot;headerlink&quot; title=&quot;JMX&quot;&gt;&lt;/a&gt;JMX&lt;/h2&gt;&lt;p&gt;需要在服务器上修改Tomcat的启动参数，打开$TOMC
+      
+    
+    </summary>
+    
+      <category term="java" scheme="http://eericzeng.github.io/categories/java/"/>
+    
+    
+      <category term="java" scheme="http://eericzeng.github.io/tags/java/"/>
+    
+      <category term="jvm" scheme="http://eericzeng.github.io/tags/jvm/"/>
+    
+      <category term="jvisualvm" scheme="http://eericzeng.github.io/tags/jvisualvm/"/>
+    
+      <category term="jmx" scheme="http://eericzeng.github.io/tags/jmx/"/>
+    
+      <category term="jstatd" scheme="http://eericzeng.github.io/tags/jstatd/"/>
+    
+  </entry>
   
   <entry>
     <title>多台服务器时钟同步</title>
@@ -257,13 +291,13 @@
     
       <category term="java" scheme="http://eericzeng.github.io/tags/java/"/>
     
-      <category term="开发工具" scheme="http://eericzeng.github.io/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"/>
-    
       <category term="eclipse" scheme="http://eericzeng.github.io/tags/eclipse/"/>
     
       <category term="IDEA" scheme="http://eericzeng.github.io/tags/IDEA/"/>
     
       <category term="debug" scheme="http://eericzeng.github.io/tags/debug/"/>
+    
+      <category term="开发工具" scheme="http://eericzeng.github.io/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"/>
     
   </entry>
   
@@ -355,9 +389,9 @@
     
       <category term="java" scheme="http://eericzeng.github.io/tags/java/"/>
     
-      <category term="开发工具" scheme="http://eericzeng.github.io/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"/>
-    
       <category term="eclipse" scheme="http://eericzeng.github.io/tags/eclipse/"/>
+    
+      <category term="开发工具" scheme="http://eericzeng.github.io/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"/>
     
       <category term="源码" scheme="http://eericzeng.github.io/tags/%E6%BA%90%E7%A0%81/"/>
     
@@ -420,9 +454,9 @@
     
       <category term="设计模式" scheme="http://eericzeng.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
-      <category term="singleton" scheme="http://eericzeng.github.io/tags/singleton/"/>
-    
       <category term="pattern" scheme="http://eericzeng.github.io/tags/pattern/"/>
+    
+      <category term="singleton" scheme="http://eericzeng.github.io/tags/singleton/"/>
     
   </entry>
   
@@ -451,9 +485,9 @@
     
       <category term="设计模式" scheme="http://eericzeng.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
-      <category term="pattern" scheme="http://eericzeng.github.io/tags/pattern/"/>
-    
       <category term="builder" scheme="http://eericzeng.github.io/tags/builder/"/>
+    
+      <category term="pattern" scheme="http://eericzeng.github.io/tags/pattern/"/>
     
   </entry>
   
@@ -621,41 +655,6 @@
       <category term="google search" scheme="http://eericzeng.github.io/tags/google-search/"/>
     
       <category term="seo" scheme="http://eericzeng.github.io/tags/seo/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>hexo博客系统分类和标签的使用</title>
-    <link href="http://eericzeng.github.io/2019/07/14/hexo%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F%E5%88%86%E7%B1%BB%E5%92%8C%E6%A0%87%E7%AD%BE%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
-    <id>http://eericzeng.github.io/2019/07/14/hexo博客系统分类和标签的使用/</id>
-    <published>2019-07-14T09:45:53.000Z</published>
-    <updated>2019-07-15T05:56:36.855Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="版本说明"><a href="#版本说明" class="headerlink" title="版本说明"></a>版本说明</h2><ul><li>hexo v3.9.0</li><li>hexo-theme-next v7.1.2</li></ul><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>以next主题为例，修改主题的配置文件themes/next/_config.yml，生效分类和标签：</p><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line"><span class="attr">  home:</span> <span class="string">/</span> <span class="string">||</span> <span class="string">home</span></span><br><span class="line">  <span class="comment">#about: /about/ || user</span></span><br><span class="line"><span class="attr">  tags:</span> <span class="string">/tags/</span> <span class="string">||</span> <span class="string">tags</span></span><br><span class="line"><span class="attr">  categories:</span> <span class="string">/categories/</span> <span class="string">||</span> <span class="string">th</span></span><br><span class="line"><span class="attr">  archives:</span> <span class="string">/archives/</span> <span class="string">||</span> <span class="string">archive</span></span><br><span class="line">  <span class="comment">#schedule: /schedule/ || calendar</span></span><br><span class="line">  <span class="comment"># sitemap: /sitemap.xml || sitemap</span></span><br><span class="line">  <span class="comment">#commonweal: /404/ || heartbeat</span></span><br></pre></td></tr></table></figure><p>新创建的hexo博客没有分类和标签，点击分类或标签会提示”Cannot GET /categories/“和”Cannot GET /tags/“。</p><h2 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h2><p>进入hexo博客所在的根目录，输入如下命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page categories</span><br></pre></td></tr></table></figure><p>成功后提示：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INFO  Created: HEXO_ROOT\<span class="built_in">source</span>\categories\index.md</span><br></pre></td></tr></table></figure><p>index.md的内容如下：</p><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: categories</span><br><span class="line">date: 2019-07-14 17:51:10</span><br><span class="line">---</span><br></pre></td></tr></table></figure><p>这个index.md可以认为是存放分类的一个文档，只是type不同。修改为如下内容：</p><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 分类</span><br><span class="line">date: 2019-07-14 17:51:10</span><br><span class="line">type: "categories"</span><br><span class="line">---</span><br></pre></td></tr></table></figure><p>找到source/_posts路径下的markdown文章，并修改其categories属性。以hexo自带的hexo-world.md为例，文件头修改为：</p><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: Hello World</span><br><span class="line">date: 2019-06-28 22:36:00</span><br><span class="line">categories: hexo</span><br><span class="line">---</span><br></pre></td></tr></table></figure><p>此时，点击菜单栏中的“分类”，即可看到新建的“hexo”分类。</p><h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>标签创建与分类类似，在控制台中输入如下命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo new page tags</span><br><span class="line">INFO  Created: HEXO_ROOT\<span class="built_in">source</span>\tags\index.md</span><br></pre></td></tr></table></figure><p>tags/index.md内容与分类类似，修改为如下内容：</p><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 标签</span><br><span class="line">date: 2019-07-14 18:19:31</span><br><span class="line">type: "tags"</span><br><span class="line">---</span><br></pre></td></tr></table></figure><p>同样在hello-world.md增加标签内容：</p><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: Hello World</span><br><span class="line">date: 2019-06-28 22:36:00</span><br><span class="line">categories: hexo</span><br><span class="line">tags:</span><br><span class="line"><span class="bullet">  - </span>hexo</span><br><span class="line"><span class="bullet">  - </span>others</span><br><span class="line">---</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;版本说明&quot;&gt;&lt;a href=&quot;#版本说明&quot; class=&quot;headerlink&quot; title=&quot;版本说明&quot;&gt;&lt;/a&gt;版本说明&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;hexo v3.9.0&lt;/li&gt;
-&lt;li&gt;hexo-theme-next v7.1.2&lt;/li&gt;
-&lt;/ul&gt;
-&lt;
-      
-    
-    </summary>
-    
-      <category term="hexo" scheme="http://eericzeng.github.io/categories/hexo/"/>
-    
-    
-      <category term="hexo" scheme="http://eericzeng.github.io/tags/hexo/"/>
-    
-      <category term="tags" scheme="http://eericzeng.github.io/tags/tags/"/>
-    
-      <category term="categories" scheme="http://eericzeng.github.io/tags/categories/"/>
-    
-      <category term="next" scheme="http://eericzeng.github.io/tags/next/"/>
     
   </entry>
   
