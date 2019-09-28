@@ -408,6 +408,233 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://eericzeng.github.io/2019/09/28/JVM参数优化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Eric Zeng">
+      <meta itemprop="description" content="你的才华撑不起你的野心时，请静下心来学习">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="EricZeng">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h2 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/09/28/JVM参数优化/" class="post-title-link" itemprop="url">JVM参数优化</a>
+              
+            
+          </h2>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-28 22:53:46" itemprop="dateCreated datePublished" datetime="2019-09-28T22:53:46+08:00">2019-09-28</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/jvm/" itemprop="url" rel="index"><span itemprop="name">jvm</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h2><p>最近，将应用手动部署到新的CentOS环境上，JRE/Tomcat都是新安装的，所以还没对JVM进行优化。习惯了本地开发和持续集成系统上现成的环境，往往会忽略JVM参数的配置。所以在启动没多久后就OOM了。。。</p>
+<h2 id="JVM优化"><a href="#JVM优化" class="headerlink" title="JVM优化"></a>JVM优化</h2><h3 id="优化前"><a href="#优化前" class="headerlink" title="优化前"></a>优化前</h3><p>应用启动后GC状态如下图所示，从老年代可以看到应用已经执行了9次Full GC，而且消耗了14.418s，可以说这种状态应用是持续不了多久的。</p>
+<p><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190924201746.png" alt="https://eericzeng.github.io"></p>
+<blockquote>
+<p>图1 优化前初始运行</p>
+</blockquote>
+<p>JVM为了获取足够的可用空间还会执行Full GC，此时垃圾收集器不是并行执行Full GC，所以Stop The World(STW)到来了。再看看第二张图的变化，老年代达到1.273G，已经完全占满，没有额外的空间可供分配的，就会出现OOM。如果是一个Web应用，我们就会发现前端各种无响应、各种超时。</p>
+<p><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190924204328.png" alt="https://eericzeng.github.io"></p>
+<blockquote>
+<p>图2 优化前运行一段时间后</p>
+</blockquote>
+<h3 id="执行优化"><a href="#执行优化" class="headerlink" title="执行优化"></a>执行优化</h3><p>JVM添加哪些参数会优化应用呢？不妨再从第二张图看看，我们的应用缺什么。</p>
+<ol>
+<li><p>老年代都不够分配，当然需要增大堆空间了。</p>
+<p>所以需要添加-Xmx设置最大堆空间，以8G服务器为例，最大可以设置7G+，最好不要设置满，从调优角度来考虑，可以逐步网上加，暂且设置4G。</p>
+</li>
+<li><p>再看看新生代，Eden区与Survivor区（S0/S1）比例十分不合理。</p>
+<p>图2中Eden: S0: S1 = 1:1:1，对于采用标记复制的新生代推荐的比例是8:1:1，所以需要修改SurvivorRatio参数为8。</p>
+</li>
+<li><p>老年代堆空间增长很快。</p>
+<p>老年代堆空间增长很快，所以我们需要延长新生对象到老年代的代数（MaxTenuringThreshold）。</p>
+</li>
+<li><p>垃圾收集器</p>
+<p>由于本应用与用户的交互性很强，所以老年代的垃圾收集器采用并发执行的CMS垃圾收集器，同时，需要选择合适的新生代垃圾收集器ParNewGC</p>
+</li>
+</ol>
+<p>综合以上四点设置的JVM优化参数如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-Xms4g</span><br><span class="line">-Xmx4g</span><br><span class="line">-XX:SurvivorRatio=8</span><br><span class="line">-XX:MaxTenuringThreshold=15</span><br><span class="line">-XX:+UseParNewGC</span><br><span class="line">-XX:+UseConcMarkSweepGC</span><br><span class="line">-XX:ParallelGCThreads=4</span><br></pre></td></tr></table></figure>
+
+<p>这个时候的GC状态见图3所示：</p>
+<p><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190928215837.png" alt="https://eericzeng.github.io"></p>
+<blockquote>
+<p>图3 初步调优GC状态</p>
+</blockquote>
+<p>这个时候JVM状态比没调优之前要好的多，但是还是刚刚运行就发生了几次Full GC。再根据图3GC状态进行分析：</p>
+<ol>
+<li><p>新生代太小了。</p>
+<p>即使有MaxTenuringThreshold参数加持，但是多少对象都熬不过两代就因为S0/S1太小了被复制到了老年代，需要适当增大新生代空间（NewSize和MaxNewSize）。</p>
+</li>
+<li><p>堆空间调整</p>
+<p>增大新生代必然会挤占老年代，而且，对于刚刚运行没多久的应用已经发生了4次Full GC也说明堆空间还是不够用，因此还需要调整-Xmx参数。</p>
+</li>
+</ol>
+<p>此时，JVM优化参数如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-Xms6g</span><br><span class="line">-Xmx6g</span><br><span class="line">-XX:SurvivorRatio=8</span><br><span class="line">-XX:MaxTenuringThreshold=15</span><br><span class="line">-XX:+UseParNewGC</span><br><span class="line">-XX:+UseConcMarkSweepGC</span><br><span class="line">-XX:ParallelGCThreads=4</span><br><span class="line">-XX:NewSize=1g</span><br><span class="line">-XX:MaxNewSize=1g</span><br></pre></td></tr></table></figure>
+
+<p>这个时候的GC状态见图4所示：</p>
+<p><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190928223028.png" alt="https://eericzeng.github.io"></p>
+<blockquote>
+<p>图4 二次优化后GC状态图</p>
+</blockquote>
+<p>从图中不难发现Minor GC次数从97减少到了31次，明显少了很多，而且比较好使的MinorGC基本上都发生在程序启动阶段。再加上GC日志和其他辅助参数，用压力工具Loadrunner压测一下，JVM参数如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">-Xms6g</span><br><span class="line">-Xmx6g</span><br><span class="line">-XX:SurvivorRatio=8</span><br><span class="line">-XX:MaxTenuringThreshold=15</span><br><span class="line">-XX:+UseParNewGC</span><br><span class="line">-XX:+UseConcMarkSweepGC</span><br><span class="line">-XX:ParallelGCThreads=4</span><br><span class="line">-XX:NewSize=1g</span><br><span class="line">-XX:MaxNewSize=1g</span><br><span class="line"></span><br><span class="line">-server</span><br><span class="line">-Xss512k</span><br><span class="line">-XX:+DisableExplicitGC</span><br><span class="line">-verbose:gc</span><br><span class="line">-XX:+PrintGCDetails</span><br><span class="line">-XX:+PrintGCDateStamps</span><br><span class="line">-XX:+PrintGCApplicationConcurrentTime</span><br><span class="line">-XX:+PrintHeapAtGC</span><br><span class="line">-Xloggc:logs/gc.log</span><br><span class="line">-XX:+HeapDumpOnOutOfMemoryError</span><br><span class="line">-XX:HeapDumpPath=logs/HeapDumpOnOutOfMemoryError</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190928223946.png" alt="https://eericzeng.github.io"></p>
+<blockquote>
+<p>图5 测试一段时间后GC状态</p>
+</blockquote>
+<p>新生代Minor GC 499次，排除启动开始比较耗时的31次，之后的每次Minor GC耗时为：(42.896-14.809)/(499-31)≈60ms，目前单次Full GC是最耗时的，达到210.861ms，对于用户交互来说还是可以接受的。当然这不一定是最优的结果，可以持续优化下去，达到最理想的状态——没有Full GC、少量Minor GC。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>之前看过很多JVM的知识，但是一直没有实际操作过，这个也算本人第一次优化JVM参数吧，如有不当之处欢迎指正。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a href="https://eericzeng.github.io/2019/09/20/jvisualvm%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5Tomcat/" title="jvisualvm远程连接">jvisualvm远程连接</a></li>
+<li><a href="https://segmentfault.com/q/1010000004348215" title="segmentfault:jvm参数-verbose:gc和-XX:+PrintGC有区别？" target="_blank" rel="noopener">jvm参数-verbose:gc和-XX:+PrintGC的区别</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://eericzeng.github.io/2019/09/20/jvisualvm远程连接Tomcat/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -458,6 +685,20 @@
           
 
           
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-09-23 14:27:01" itemprop="dateModified" datetime="2019-09-23T14:27:01+08:00">2019-09-23</time>
+              </span>
+            
+          
 
           
             <span class="post-meta-item">
@@ -469,6 +710,13 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+                  ，
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/jvm/" itemprop="url" rel="index"><span itemprop="name">jvm</span></a></span>
 
                 
                 
@@ -510,9 +758,12 @@
           
             <p>jvisualvm远程连接有两种方式：jmx和jstatd。</p>
 <h2 id="JMX"><a href="#JMX" class="headerlink" title="JMX"></a>JMX</h2><p>需要在服务器上修改Tomcat的启动参数，打开$TOMCAT_HOME/bin/catalina.sh，在文件中添加如下参数：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=<span class="string">"<span class="variable">$JAVA_OPTS</span></span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.port=8777</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.rmi.port=8777</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.authenticate=false</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.ssl=false</span></span><br><span class="line"><span class="string">-Djava.rmi.server.hostname=192.168.1.110"</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$CATALINA_OPTS</span></span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.port=8777</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.rmi.port=8777</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.authenticate=false</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.ssl=false</span></span><br><span class="line"><span class="string">-Djava.rmi.server.hostname=192.168.1.110"</span></span><br></pre></td></tr></table></figure>
 
 <p>其中，192.168.1.110是部署Tomcat的服务器地址。然后我们在本地启动jvisualvm，右击导航栏的“远程”-&gt;”添加远程主机”，输入远程主机IP——以“192.168.1.110”为例，右击远程主机“192.168.1.110”-&gt;“添加JMX连接”，输入端口号8777，勾选不要求SSL连接，这里没有使用安全凭证，因此也不需要勾选安全凭证，点击“确定”进行连接。</p>
+<p><strong>注意：</strong>使用CATALINA_OPTS，而不要使用JAVA_OPTS，使用JAVA_OPTS在关闭Tomcat时会出现如下错误导致Tomcat无法关闭：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error: JMX connector server communication error: service:jmx:rmi://localhost.localdomain:8777</span><br></pre></td></tr></table></figure>
+
 <p><strong>然而</strong>，如果JMX没有缺点也就不需要使用第二种方法了。JMX无法使用VisualGC插件，这个真的无法忍受，只能用下面这种方法进行连接。</p>
 <h2 id="jstatd"><a href="#jstatd" class="headerlink" title="jstatd"></a>jstatd</h2><p>jstatd需要JDK1.8，低版本的可能没有这个工具。运行jstatd命令需要开放权限，创建安全策略文件如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="variable">$TOMCAT_HOME</span>/</span><br><span class="line">touch jstatd.all.policy</span><br><span class="line">vim jstatd.all.policy</span><br></pre></td></tr></table></figure>
@@ -521,7 +772,9 @@
 <pre><code>grant codebase &quot;file:${java.home}/../lib/tools.jar&quot; {
     permission java.security.AllPermission;
 };</code></pre><p>运行jstatd工具：</p>
-<pre><code>jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostanme=192.168.1.110 &amp;</code></pre><p>以上默认端口是1099，若需要修改可以添加-p参数进行制定。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostname=192.168.1.110 &amp;</span><br></pre></td></tr></table></figure>
+
+<p>以上默认端口是1099，若需要修改可以添加-p参数进行制定。</p>
 <p>好了，可以本地打开jvisualvm远程连接一下192.168.1.110，VisualGC可以正常使用，神奇的是CPU监控显示“<strong>不受此JVM支持</strong>”（手动愣住(°ー°〃)），这就是为什么会有两种方法同时存在？！！！</p>
 
           
@@ -2024,186 +2277,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://eericzeng.github.io/2019/08/07/fastjson自带JsonPath与json-path比较/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Eric Zeng">
-      <meta itemprop="description" content="你的才华撑不起你的野心时，请静下心来学习">
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="EricZeng">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h2 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/08/07/fastjson自带JsonPath与json-path比较/" class="post-title-link" itemprop="url">fastjson自带JsonPath与json-path比较</a>
-              
-            
-          </h2>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-08-07 20:57:07 / 修改时间：20:58:05" itemprop="dateCreated datePublished" datetime="2019-08-07T20:57:07+08:00">2019-08-07</time>
-            </span>
-          
-
-          
-            
-
-            
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h2><p>fastjson从1.2版本开始支持JsonPath语法，但是在部分情境下还是无法很好的支持。例如下面的json结构：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">"store"</span>: &#123;</span><br><span class="line">		<span class="attr">"book"</span>: [&#123;</span><br><span class="line">			<span class="attr">"title"</span>: <span class="string">"Java虚拟机"</span>,</span><br><span class="line">			<span class="attr">"price"</span>: <span class="number">20</span></span><br><span class="line">		&#125;, &#123;</span><br><span class="line">			<span class="attr">"title"</span>: <span class="string">"Head First 设计模式"</span>,</span><br><span class="line">			<span class="attr">"price"</span>: <span class="number">72</span></span><br><span class="line">		&#125;, &#123;</span><br><span class="line">			<span class="attr">"title"</span>: <span class="string">"重构：改善既有代码的设计"</span>,</span><br><span class="line">			<span class="attr">"isbn"</span>: <span class="string">"123"</span>,</span><br><span class="line">			<span class="attr">"price"</span>: <span class="number">38</span></span><br><span class="line">		&#125;, &#123;</span><br><span class="line">			<span class="attr">"title"</span>: <span class="string">"Spring实践4"</span>,</span><br><span class="line">			<span class="attr">"isbn"</span>: <span class="string">"321"</span>,</span><br><span class="line">			<span class="attr">"price"</span>: <span class="number">32</span></span><br><span class="line">		&#125;, &#123;</span><br><span class="line">			<span class="attr">"title"</span>: <span class="string">"图解HTTP"</span>,</span><br><span class="line">			<span class="attr">"isbn"</span>: <span class="string">"543"</span>,</span><br><span class="line">			<span class="attr">"price"</span>: <span class="number">25</span></span><br><span class="line">		&#125;],</span><br><span class="line">		<span class="attr">"bicycle"</span>: &#123;</span><br><span class="line">			<span class="attr">"color"</span>: <span class="string">"red"</span>,</span><br><span class="line">			<span class="attr">"price"</span>: <span class="number">219</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>需要取出book中的title和price字段，理想情况是这样的：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">	<span class="attr">"title"</span>: <span class="string">"Java虚拟机"</span>,</span><br><span class="line">	<span class="attr">"price"</span>: <span class="number">20</span></span><br><span class="line">&#125;, &#123;</span><br><span class="line">	<span class="attr">"title"</span>: <span class="string">"Head First 设计模式"</span>,</span><br><span class="line">	<span class="attr">"price"</span>: <span class="number">72</span></span><br><span class="line">&#125;, &#123;</span><br><span class="line">	<span class="attr">"title"</span>: <span class="string">"重构：改善既有代码的设计"</span>,</span><br><span class="line">	<span class="attr">"price"</span>: <span class="number">38</span></span><br><span class="line">&#125;, &#123;</span><br><span class="line">	<span class="attr">"title"</span>: <span class="string">"Spring实践4"</span>,</span><br><span class="line">	<span class="attr">"price"</span>: <span class="number">32</span></span><br><span class="line">&#125;, &#123;</span><br><span class="line">	<span class="attr">"title"</span>: <span class="string">"图解HTTP"</span>,</span><br><span class="line">	<span class="attr">"price"</span>: <span class="number">25</span></span><br><span class="line">&#125;]</span><br></pre></td></tr></table></figure>
-
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>引入fastjson/json-path版本如下：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.58<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.jayway.jsonpath<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>json-path<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.4.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>java代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSONPath;</span><br><span class="line"><span class="keyword">import</span> com.jayway.jsonpath.JsonPath;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JsonPathTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String json = <span class="string">"&#123;\"store\": &#123;\"book\": [&#123;\"title\": \"Java虚拟机\",\"price\": 20&#125;, &#123;\"title\": \"Head First 设计模式\",\"price\": 72&#125;, &#123;\"title\": \"重构：改善既有代码的设计\",\"isbn\": \"123\",\"price\": 38&#125;, &#123;\"title\": \"Spring实践4\",\"isbn\": \"321\",\"price\": 32&#125;, &#123;\"title\": \"图解HTTP\",\"isbn\": \"543\",\"price\": 25&#125;],\"bicycle\": &#123;\"color\": \"red\",\"price\": 219&#125;&#125;&#125;"</span>;</span><br><span class="line"></span><br><span class="line">        String jsonPath = <span class="string">"$['store']['book'][:-1]['price','title']"</span>;</span><br><span class="line">        Object obj = JSONPath.read(json, jsonPath);</span><br><span class="line">        System.out.println(obj);</span><br><span class="line"></span><br><span class="line">        jsonPath = <span class="string">"$.store.book.[*].['title', 'price']"</span>;</span><br><span class="line">        obj = JsonPath.parse(json).read(jsonPath);</span><br><span class="line">        String str = JSONObject.toJSONString(obj);</span><br><span class="line">        System.out.println(str);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>测试结果：</p>
-<pre><code>[[20,72,38,32,25], [&quot;Java虚拟机&quot;,&quot;Head First 设计模式&quot;,&quot;重构：改善既有代码的设计&quot;,&quot;Spring实践4&quot;,&quot;图解HTTP&quot;]]
-[{&quot;title&quot;:&quot;Java虚拟机&quot;,&quot;price&quot;:20},{&quot;title&quot;:&quot;Head First 设计模式&quot;,&quot;price&quot;:72},{&quot;title&quot;:&quot;重构：改善既有代码的设计&quot;,&quot;price&quot;:38},{&quot;title&quot;:&quot;Spring实践4&quot;,&quot;price&quot;:32},{&quot;title&quot;:&quot;图解HTTP&quot;,&quot;price&quot;:25}]</code></pre><p>从结果上看json-path可以实现json带list结构的结果筛选，而fastjson只提取了两个列表（也可能我的语法不对，但是以目前的版本，我查了很多资料都没有找到一个更好的语法实现，如果有请联系我）。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
-<li><a href="https://github.com/alibaba/fastjson/wiki/JSONPath" target="_blank" rel="noopener">fastjson对JSONPath的官方教程</a></li>
-<li><a href="https://github.com/json-path/JsonPath" target="_blank" rel="noopener">Jayway JsonPath</a></li>
-<li><a href="https://github.com/eEricZeng/demo/tree/jsonpath" title="https&#x3A;//github.com/eEricZeng/demo/tree/jsonpath" target="_blank" rel="noopener">GitRepo</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2252,7 +2325,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-count">24</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2289,7 +2362,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -2448,7 +2523,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">68</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">70</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

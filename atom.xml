@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://eericzeng.github.io/"/>
-  <updated>2019-09-20T11:03:45.549Z</updated>
+  <updated>2019-09-28T14:53:46.733Z</updated>
   <id>http://eericzeng.github.io/</id>
   
   <author>
@@ -17,13 +17,46 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>JVM参数优化</title>
+    <link href="http://eericzeng.github.io/2019/09/28/JVM%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96/"/>
+    <id>http://eericzeng.github.io/2019/09/28/JVM参数优化/</id>
+    <published>2019-09-28T14:53:46.000Z</published>
+    <updated>2019-09-28T14:53:46.733Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h2><p>最近，将应用手动部署到新的CentOS环境上，JRE/Tomcat都是新安装的，所以还没对JVM进行优化。习惯了本地开发和持续集成系统上现成的环境，往往会忽略JVM参数的配置。所以在启动没多久后就OOM了。。。</p><h2 id="JVM优化"><a href="#JVM优化" class="headerlink" title="JVM优化"></a>JVM优化</h2><h3 id="优化前"><a href="#优化前" class="headerlink" title="优化前"></a>优化前</h3><p>应用启动后GC状态如下图所示，从老年代可以看到应用已经执行了9次Full GC，而且消耗了14.418s，可以说这种状态应用是持续不了多久的。</p><p><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190924201746.png" alt="https://eericzeng.github.io"></p><blockquote><p>图1 优化前初始运行</p></blockquote><p>JVM为了获取足够的可用空间还会执行Full GC，此时垃圾收集器不是并行执行Full GC，所以Stop The World(STW)到来了。再看看第二张图的变化，老年代达到1.273G，已经完全占满，没有额外的空间可供分配的，就会出现OOM。如果是一个Web应用，我们就会发现前端各种无响应、各种超时。</p><p><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190924204328.png" alt="https://eericzeng.github.io"></p><blockquote><p>图2 优化前运行一段时间后</p></blockquote><h3 id="执行优化"><a href="#执行优化" class="headerlink" title="执行优化"></a>执行优化</h3><p>JVM添加哪些参数会优化应用呢？不妨再从第二张图看看，我们的应用缺什么。</p><ol><li><p>老年代都不够分配，当然需要增大堆空间了。</p><p>所以需要添加-Xmx设置最大堆空间，以8G服务器为例，最大可以设置7G+，最好不要设置满，从调优角度来考虑，可以逐步网上加，暂且设置4G。</p></li><li><p>再看看新生代，Eden区与Survivor区（S0/S1）比例十分不合理。</p><p>图2中Eden: S0: S1 = 1:1:1，对于采用标记复制的新生代推荐的比例是8:1:1，所以需要修改SurvivorRatio参数为8。</p></li><li><p>老年代堆空间增长很快。</p><p>老年代堆空间增长很快，所以我们需要延长新生对象到老年代的代数（MaxTenuringThreshold）。</p></li><li><p>垃圾收集器</p><p>由于本应用与用户的交互性很强，所以老年代的垃圾收集器采用并发执行的CMS垃圾收集器，同时，需要选择合适的新生代垃圾收集器ParNewGC</p></li></ol><p>综合以上四点设置的JVM优化参数如下：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-Xms4g</span><br><span class="line">-Xmx4g</span><br><span class="line">-XX:SurvivorRatio=8</span><br><span class="line">-XX:MaxTenuringThreshold=15</span><br><span class="line">-XX:+UseParNewGC</span><br><span class="line">-XX:+UseConcMarkSweepGC</span><br><span class="line">-XX:ParallelGCThreads=4</span><br></pre></td></tr></table></figure><p>这个时候的GC状态见图3所示：</p><p><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190928215837.png" alt="https://eericzeng.github.io"></p><blockquote><p>图3 初步调优GC状态</p></blockquote><p>这个时候JVM状态比没调优之前要好的多，但是还是刚刚运行就发生了几次Full GC。再根据图3GC状态进行分析：</p><ol><li><p>新生代太小了。</p><p>即使有MaxTenuringThreshold参数加持，但是多少对象都熬不过两代就因为S0/S1太小了被复制到了老年代，需要适当增大新生代空间（NewSize和MaxNewSize）。</p></li><li><p>堆空间调整</p><p>增大新生代必然会挤占老年代，而且，对于刚刚运行没多久的应用已经发生了4次Full GC也说明堆空间还是不够用，因此还需要调整-Xmx参数。</p></li></ol><p>此时，JVM优化参数如下：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-Xms6g</span><br><span class="line">-Xmx6g</span><br><span class="line">-XX:SurvivorRatio=8</span><br><span class="line">-XX:MaxTenuringThreshold=15</span><br><span class="line">-XX:+UseParNewGC</span><br><span class="line">-XX:+UseConcMarkSweepGC</span><br><span class="line">-XX:ParallelGCThreads=4</span><br><span class="line">-XX:NewSize=1g</span><br><span class="line">-XX:MaxNewSize=1g</span><br></pre></td></tr></table></figure><p>这个时候的GC状态见图4所示：</p><p><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190928223028.png" alt="https://eericzeng.github.io"></p><blockquote><p>图4 二次优化后GC状态图</p></blockquote><p>从图中不难发现Minor GC次数从97减少到了31次，明显少了很多，而且比较好使的MinorGC基本上都发生在程序启动阶段。再加上GC日志和其他辅助参数，用压力工具Loadrunner压测一下，JVM参数如下：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">-Xms6g</span><br><span class="line">-Xmx6g</span><br><span class="line">-XX:SurvivorRatio=8</span><br><span class="line">-XX:MaxTenuringThreshold=15</span><br><span class="line">-XX:+UseParNewGC</span><br><span class="line">-XX:+UseConcMarkSweepGC</span><br><span class="line">-XX:ParallelGCThreads=4</span><br><span class="line">-XX:NewSize=1g</span><br><span class="line">-XX:MaxNewSize=1g</span><br><span class="line"></span><br><span class="line">-server</span><br><span class="line">-Xss512k</span><br><span class="line">-XX:+DisableExplicitGC</span><br><span class="line">-verbose:gc</span><br><span class="line">-XX:+PrintGCDetails</span><br><span class="line">-XX:+PrintGCDateStamps</span><br><span class="line">-XX:+PrintGCApplicationConcurrentTime</span><br><span class="line">-XX:+PrintHeapAtGC</span><br><span class="line">-Xloggc:logs/gc.log</span><br><span class="line">-XX:+HeapDumpOnOutOfMemoryError</span><br><span class="line">-XX:HeapDumpPath=logs/HeapDumpOnOutOfMemoryError</span><br></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/eEricZeng/imgbed/master/20190928223946.png" alt="https://eericzeng.github.io"></p><blockquote><p>图5 测试一段时间后GC状态</p></blockquote><p>新生代Minor GC 499次，排除启动开始比较耗时的31次，之后的每次Minor GC耗时为：(42.896-14.809)/(499-31)≈60ms，目前单次Full GC是最耗时的，达到210.861ms，对于用户交互来说还是可以接受的。当然这不一定是最优的结果，可以持续优化下去，达到最理想的状态——没有Full GC、少量Minor GC。</p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>之前看过很多JVM的知识，但是一直没有实际操作过，这个也算本人第一次优化JVM参数吧，如有不当之处欢迎指正。</p><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol><li><a href="https://eericzeng.github.io/2019/09/20/jvisualvm%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5Tomcat/" title="jvisualvm远程连接">jvisualvm远程连接</a></li><li><a href="https://segmentfault.com/q/1010000004348215" title="segmentfault:jvm参数-verbose:gc和-XX:+PrintGC有区别？" target="_blank" rel="noopener">jvm参数-verbose:gc和-XX:+PrintGC的区别</a></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;背景介绍&quot;&gt;&lt;a href=&quot;#背景介绍&quot; class=&quot;headerlink&quot; title=&quot;背景介绍&quot;&gt;&lt;/a&gt;背景介绍&lt;/h2&gt;&lt;p&gt;最近，将应用手动部署到新的CentOS环境上，JRE/Tomcat都是新安装的，所以还没对JVM进行优化。习惯了本地开发和持
+      
+    
+    </summary>
+    
+      <category term="java" scheme="http://eericzeng.github.io/categories/java/"/>
+    
+      <category term="jvm" scheme="http://eericzeng.github.io/categories/java/jvm/"/>
+    
+    
+      <category term="java" scheme="http://eericzeng.github.io/tags/java/"/>
+    
+      <category term="jvm" scheme="http://eericzeng.github.io/tags/jvm/"/>
+    
+      <category term="GC" scheme="http://eericzeng.github.io/tags/GC/"/>
+    
+      <category term="OOM" scheme="http://eericzeng.github.io/tags/OOM/"/>
+    
+  </entry>
+  
+  <entry>
     <title>jvisualvm远程连接Tomcat</title>
     <link href="http://eericzeng.github.io/2019/09/20/jvisualvm%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5Tomcat/"/>
     <id>http://eericzeng.github.io/2019/09/20/jvisualvm远程连接Tomcat/</id>
     <published>2019-09-20T11:03:45.000Z</published>
-    <updated>2019-09-20T11:03:45.549Z</updated>
+    <updated>2019-09-23T06:27:01.635Z</updated>
     
-    <content type="html"><![CDATA[<p>jvisualvm远程连接有两种方式：jmx和jstatd。</p><h2 id="JMX"><a href="#JMX" class="headerlink" title="JMX"></a>JMX</h2><p>需要在服务器上修改Tomcat的启动参数，打开$TOMCAT_HOME/bin/catalina.sh，在文件中添加如下参数：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=<span class="string">"<span class="variable">$JAVA_OPTS</span></span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.port=8777</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.rmi.port=8777</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.authenticate=false</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.ssl=false</span></span><br><span class="line"><span class="string">-Djava.rmi.server.hostname=192.168.1.110"</span></span><br></pre></td></tr></table></figure><p>其中，192.168.1.110是部署Tomcat的服务器地址。然后我们在本地启动jvisualvm，右击导航栏的“远程”-&gt;”添加远程主机”，输入远程主机IP——以“192.168.1.110”为例，右击远程主机“192.168.1.110”-&gt;“添加JMX连接”，输入端口号8777，勾选不要求SSL连接，这里没有使用安全凭证，因此也不需要勾选安全凭证，点击“确定”进行连接。</p><p><strong>然而</strong>，如果JMX没有缺点也就不需要使用第二种方法了。JMX无法使用VisualGC插件，这个真的无法忍受，只能用下面这种方法进行连接。</p><h2 id="jstatd"><a href="#jstatd" class="headerlink" title="jstatd"></a>jstatd</h2><p>jstatd需要JDK1.8，低版本的可能没有这个工具。运行jstatd命令需要开放权限，创建安全策略文件如下：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="variable">$TOMCAT_HOME</span>/</span><br><span class="line">touch jstatd.all.policy</span><br><span class="line">vim jstatd.all.policy</span><br></pre></td></tr></table></figure><p>添加如下内容：</p><pre><code>grant codebase &quot;file:${java.home}/../lib/tools.jar&quot; {    permission java.security.AllPermission;};</code></pre><p>运行jstatd工具：</p><pre><code>jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostanme=192.168.1.110 &amp;</code></pre><p>以上默认端口是1099，若需要修改可以添加-p参数进行制定。</p><p>好了，可以本地打开jvisualvm远程连接一下192.168.1.110，VisualGC可以正常使用，神奇的是CPU监控显示“<strong>不受此JVM支持</strong>”（手动愣住(°ー°〃)），这就是为什么会有两种方法同时存在？！！！</p>]]></content>
+    <content type="html"><![CDATA[<p>jvisualvm远程连接有两种方式：jmx和jstatd。</p><h2 id="JMX"><a href="#JMX" class="headerlink" title="JMX"></a>JMX</h2><p>需要在服务器上修改Tomcat的启动参数，打开$TOMCAT_HOME/bin/catalina.sh，在文件中添加如下参数：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CATALINA_OPTS=<span class="string">"<span class="variable">$CATALINA_OPTS</span></span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.port=8777</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.rmi.port=8777</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.authenticate=false</span></span><br><span class="line"><span class="string">-Dcom.sun.management.jmxremote.ssl=false</span></span><br><span class="line"><span class="string">-Djava.rmi.server.hostname=192.168.1.110"</span></span><br></pre></td></tr></table></figure><p>其中，192.168.1.110是部署Tomcat的服务器地址。然后我们在本地启动jvisualvm，右击导航栏的“远程”-&gt;”添加远程主机”，输入远程主机IP——以“192.168.1.110”为例，右击远程主机“192.168.1.110”-&gt;“添加JMX连接”，输入端口号8777，勾选不要求SSL连接，这里没有使用安全凭证，因此也不需要勾选安全凭证，点击“确定”进行连接。</p><p><strong>注意：</strong>使用CATALINA_OPTS，而不要使用JAVA_OPTS，使用JAVA_OPTS在关闭Tomcat时会出现如下错误导致Tomcat无法关闭：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error: JMX connector server communication error: service:jmx:rmi://localhost.localdomain:8777</span><br></pre></td></tr></table></figure><p><strong>然而</strong>，如果JMX没有缺点也就不需要使用第二种方法了。JMX无法使用VisualGC插件，这个真的无法忍受，只能用下面这种方法进行连接。</p><h2 id="jstatd"><a href="#jstatd" class="headerlink" title="jstatd"></a>jstatd</h2><p>jstatd需要JDK1.8，低版本的可能没有这个工具。运行jstatd命令需要开放权限，创建安全策略文件如下：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="variable">$TOMCAT_HOME</span>/</span><br><span class="line">touch jstatd.all.policy</span><br><span class="line">vim jstatd.all.policy</span><br></pre></td></tr></table></figure><p>添加如下内容：</p><pre><code>grant codebase &quot;file:${java.home}/../lib/tools.jar&quot; {    permission java.security.AllPermission;};</code></pre><p>运行jstatd工具：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostname=192.168.1.110 &amp;</span><br></pre></td></tr></table></figure><p>以上默认端口是1099，若需要修改可以添加-p参数进行制定。</p><p>好了，可以本地打开jvisualvm远程连接一下192.168.1.110，VisualGC可以正常使用，神奇的是CPU监控显示“<strong>不受此JVM支持</strong>”（手动愣住(°ー°〃)），这就是为什么会有两种方法同时存在？！！！</p>]]></content>
     
     <summary type="html">
     
@@ -36,6 +69,8 @@
     </summary>
     
       <category term="java" scheme="http://eericzeng.github.io/categories/java/"/>
+    
+      <category term="jvm" scheme="http://eericzeng.github.io/categories/java/jvm/"/>
     
     
       <category term="java" scheme="http://eericzeng.github.io/tags/java/"/>
@@ -545,11 +580,11 @@
       <category term="hexo" scheme="http://eericzeng.github.io/categories/hexo/"/>
     
     
-      <category term="hexo" scheme="http://eericzeng.github.io/tags/hexo/"/>
-    
       <category term="PicGo" scheme="http://eericzeng.github.io/tags/PicGo/"/>
     
       <category term="图床" scheme="http://eericzeng.github.io/tags/%E5%9B%BE%E5%BA%8A/"/>
+    
+      <category term="hexo" scheme="http://eericzeng.github.io/tags/hexo/"/>
     
   </entry>
   
@@ -616,45 +651,6 @@
       <category term="search" scheme="http://eericzeng.github.io/tags/search/"/>
     
       <category term="站内搜索" scheme="http://eericzeng.github.io/tags/%E7%AB%99%E5%86%85%E6%90%9C%E7%B4%A2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>hexo博客站点sitemap的使用</title>
-    <link href="http://eericzeng.github.io/2019/07/14/hexo%E5%8D%9A%E5%AE%A2%E7%AB%99%E7%82%B9sitemap%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
-    <id>http://eericzeng.github.io/2019/07/14/hexo博客站点sitemap的使用/</id>
-    <published>2019-07-14T10:48:58.000Z</published>
-    <updated>2019-07-18T02:25:14.314Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="版本说明"><a href="#版本说明" class="headerlink" title="版本说明"></a>版本说明</h2><ul><li>hexo v3.9.0</li><li>hexo-theme-next v7.1.2</li></ul><h2 id="启用sitemap功能"><a href="#启用sitemap功能" class="headerlink" title="启用sitemap功能"></a>启用sitemap功能</h2><p>为了让博文被google或百度检索，需要使用hexo的sitemap功能。修改themes/next/_config.yml：</p><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">menu:</span></span><br><span class="line"><span class="attr">  home:</span> <span class="string">/</span> <span class="string">||</span> <span class="string">home</span></span><br><span class="line">  <span class="comment">#about: /about/ || user</span></span><br><span class="line"><span class="attr">  tags:</span> <span class="string">/tags/</span> <span class="string">||</span> <span class="string">tags</span></span><br><span class="line"><span class="attr">  categories:</span> <span class="string">/categories/</span> <span class="string">||</span> <span class="string">th</span></span><br><span class="line"><span class="attr">  archives:</span> <span class="string">/archives/</span> <span class="string">||</span> <span class="string">archive</span></span><br><span class="line">  <span class="comment">#schedule: /schedule/ || calendar</span></span><br><span class="line"><span class="attr">  sitemap:</span> <span class="string">/sitemap.xml</span> <span class="string">||</span> <span class="string">sitemap</span></span><br><span class="line">  <span class="comment">#commonweal: /404/ || heartbeat</span></span><br></pre></td></tr></table></figure><h2 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h2><p>切换到hexo根目录下，安装搜索引擎插件，插件根据自己的需要安装其中一个或者都安装：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-generator-sitemap --save</span><br><span class="line">npm install hexo-generator-baidu-sitemap --save</span><br></pre></td></tr></table></figure><p>如何此时你跟我一样使用的是next主题，直接执行如下命令即可访问站点地图：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br></pre></td></tr></table></figure><p>此时，在public的静态文件根目录中会多出一个sitemap.xml文件，表示谷歌检索的sitemap安装成功。</p><h2 id="谷歌检索"><a href="#谷歌检索" class="headerlink" title="谷歌检索"></a>谷歌检索</h2><h3 id="检测网站是否被检索"><a href="#检测网站是否被检索" class="headerlink" title="检测网站是否被检索"></a>检测网站是否被检索</h3><p>以GitHub Pages为例，新建的GitHub Pages是没有被谷歌检索的。在谷歌搜索栏中输入如下信息进行检索：</p><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">site: xxx.github.io</span><br></pre></td></tr></table></figure><p>xxx为你的GitHub账号，如果没有被检索，不会显示hexo中的任何博文，如果有下面的步骤就可以省略了。</p><h3 id="验证站点"><a href="#验证站点" class="headerlink" title="验证站点"></a>验证站点</h3><p>需要谷歌账号，没有的可以申请一个。登录<a href="https://www.google.com/webmasters/tools" target="_blank" rel="noopener">GoogleSearchConsole</a>，点击立即使用，输入需要验证所有权的网站地址，例如本站地址</p><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://eericzeng.github.io</span><br></pre></td></tr></table></figure><p>对于hexo博客网站，最好使用<strong>HTML标记</strong>法验证网站所有权，<del>复制Google给的标记内容粘贴到themes/next/layout/_partials/head/head.swig文件meta标签最后面。这里使用的是next主题，其他主题类似。</del>我发现next主题有更好的配置方式，千万不要采用修改head.swig文件的方法，不然在升级NexT版本时会遇到很多不必要的麻烦。修改themes/next/_config.yml文件：</p><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Google Webmaster tools verification.</span></span><br><span class="line"><span class="comment"># See: https://www.google.com/webmasters</span></span><br><span class="line"><span class="attr">google_site_verification:</span> <span class="string">xxxxxxxxxx</span></span><br></pre></td></tr></table></figure><p>然后生成静态文件并发布：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure><p>回到谷歌搜索控制台继续进行验证，点击<strong>完成</strong>。</p><h3 id="添加sitemap-xml"><a href="#添加sitemap-xml" class="headerlink" title="添加sitemap.xml"></a>添加sitemap.xml</h3><p>打开谷歌控制台选择上一步添加的网站-&gt;<strong>索引</strong>-&gt;<strong>站点地图</strong>，在添加新的站点地图中填入”sitemap.xml”即可，添加成功会在<strong>已提交的站点地图</strong>中显示，过一段时间在<strong>概述</strong>中会显示被索引的情况。</p><h2 id="百度检索"><a href="#百度检索" class="headerlink" title="百度检索"></a>百度检索</h2><h3 id="添加站点"><a href="#添加站点" class="headerlink" title="添加站点"></a>添加站点</h3><p>登录<a href="https://ziyuan.baidu.com/" target="_blank" rel="noopener">百度资源管理平台</a>，依次点击<strong>用户中心</strong>-&gt;<strong>站点管理</strong>-&gt;<strong>添加网站</strong>（网站会随时更新，路径可能不同，只要找到添加网站的位置就可以）。</p><ol><li><p>输入网址</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https//eericzeng.github.io</span><br><span class="line">//（注意协议头，gitpage在http基础上要加s）</span><br></pre></td></tr></table></figure></li><li><p>站点属性<br>最多可以选择三项，建议相关的都选上，提高曝光度</p></li><li><p>验证网站<br>NexT主题选择<strong>HTML标签验证即可</strong>，复制<meta>标签中的content值，修改next配置文件_config.yml：</p><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Baidu Webmaster tools verification.</span></span><br><span class="line"><span class="comment"># See: https://ziyuan.baidu.com/site</span></span><br><span class="line"><span class="attr">baidu_site_verification:</span> <span class="string">xxxxxxxxxx</span></span><br><span class="line"><span class="comment"># Enable baidu push so that the blog will push the url to baidu automatically which is very helpful for SEO.</span></span><br><span class="line"><span class="attr">baidu_push:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure></li></ol><p>百度资源页面先不要关闭，执行下面的步骤之后再点击<strong>完成验证</strong>。</p><h3 id="发布并验证"><a href="#发布并验证" class="headerlink" title="发布并验证"></a>发布并验证</h3><p>hexo根目录下执行如下命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure><p>回到百度资源网站，点击<strong>完成验证</strong>。</p><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol><li><a href="https://jactor-sue.github.io/zh-CN/how-blog-on-githubpages-can-be-searched-by-google/" target="_blank" rel="noopener">让Google搜索到搭建在Github Pages上的博客</a></li><li><a href="https://www.jianshu.com/p/9c2d6db2f855" target="_blank" rel="noopener">生成sitemap站点地图</a></li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;版本说明&quot;&gt;&lt;a href=&quot;#版本说明&quot; class=&quot;headerlink&quot; title=&quot;版本说明&quot;&gt;&lt;/a&gt;版本说明&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;hexo v3.9.0&lt;/li&gt;
-&lt;li&gt;hexo-theme-next v7.1.2&lt;/li&gt;
-&lt;/ul&gt;
-&lt;
-      
-    
-    </summary>
-    
-      <category term="hexo" scheme="http://eericzeng.github.io/categories/hexo/"/>
-    
-    
-      <category term="hexo" scheme="http://eericzeng.github.io/tags/hexo/"/>
-    
-      <category term="sitemap" scheme="http://eericzeng.github.io/tags/sitemap/"/>
-    
-      <category term="检索" scheme="http://eericzeng.github.io/tags/%E6%A3%80%E7%B4%A2/"/>
-    
-      <category term="搜索引擎" scheme="http://eericzeng.github.io/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/"/>
-    
-      <category term="google search" scheme="http://eericzeng.github.io/tags/google-search/"/>
-    
-      <category term="seo" scheme="http://eericzeng.github.io/tags/seo/"/>
     
   </entry>
   

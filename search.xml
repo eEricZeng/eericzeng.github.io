@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[jvisualvm远程连接Tomcat]]></title>
-    <url>%2F2019%2F09%2F20%2Fjvisualvm%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5Tomcat%2F</url>
-    <content type="text"><![CDATA[jvisualvm远程连接有两种方式：jmx和jstatd。 JMX需要在服务器上修改Tomcat的启动参数，打开$TOMCAT_HOME/bin/catalina.sh，在文件中添加如下参数： 1234567JAVA_OPTS="$JAVA_OPTS-Dcom.sun.management.jmxremote-Dcom.sun.management.jmxremote.port=8777-Dcom.sun.management.jmxremote.rmi.port=8777-Dcom.sun.management.jmxremote.authenticate=false-Dcom.sun.management.jmxremote.ssl=false-Djava.rmi.server.hostname=192.168.1.110" 其中，192.168.1.110是部署Tomcat的服务器地址。然后我们在本地启动jvisualvm，右击导航栏的“远程”-&gt;”添加远程主机”，输入远程主机IP——以“192.168.1.110”为例，右击远程主机“192.168.1.110”-&gt;“添加JMX连接”，输入端口号8777，勾选不要求SSL连接，这里没有使用安全凭证，因此也不需要勾选安全凭证，点击“确定”进行连接。 然而，如果JMX没有缺点也就不需要使用第二种方法了。JMX无法使用VisualGC插件，这个真的无法忍受，只能用下面这种方法进行连接。 jstatdjstatd需要JDK1.8，低版本的可能没有这个工具。运行jstatd命令需要开放权限，创建安全策略文件如下： 123cd $TOMCAT_HOME/touch jstatd.all.policyvim jstatd.all.policy 添加如下内容： grant codebase &quot;file:${java.home}/../lib/tools.jar&quot; { permission java.security.AllPermission; };运行jstatd工具： jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostanme=192.168.1.110 &amp;以上默认端口是1099，若需要修改可以添加-p参数进行制定。 好了，可以本地打开jvisualvm远程连接一下192.168.1.110，VisualGC可以正常使用，神奇的是CPU监控显示“不受此JVM支持”（手动愣住(°ー°〃)），这就是为什么会有两种方法同时存在？！！！]]></content>
+    <title><![CDATA[JVM参数优化]]></title>
+    <url>%2F2019%2F09%2F28%2FJVM%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96%2F</url>
+    <content type="text"><![CDATA[背景介绍最近，将应用手动部署到新的CentOS环境上，JRE/Tomcat都是新安装的，所以还没对JVM进行优化。习惯了本地开发和持续集成系统上现成的环境，往往会忽略JVM参数的配置。所以在启动没多久后就OOM了。。。 JVM优化优化前应用启动后GC状态如下图所示，从老年代可以看到应用已经执行了9次Full GC，而且消耗了14.418s，可以说这种状态应用是持续不了多久的。 图1 优化前初始运行 JVM为了获取足够的可用空间还会执行Full GC，此时垃圾收集器不是并行执行Full GC，所以Stop The World(STW)到来了。再看看第二张图的变化，老年代达到1.273G，已经完全占满，没有额外的空间可供分配的，就会出现OOM。如果是一个Web应用，我们就会发现前端各种无响应、各种超时。 图2 优化前运行一段时间后 执行优化JVM添加哪些参数会优化应用呢？不妨再从第二张图看看，我们的应用缺什么。 老年代都不够分配，当然需要增大堆空间了。 所以需要添加-Xmx设置最大堆空间，以8G服务器为例，最大可以设置7G+，最好不要设置满，从调优角度来考虑，可以逐步网上加，暂且设置4G。 再看看新生代，Eden区与Survivor区（S0/S1）比例十分不合理。 图2中Eden: S0: S1 = 1:1:1，对于采用标记复制的新生代推荐的比例是8:1:1，所以需要修改SurvivorRatio参数为8。 老年代堆空间增长很快。 老年代堆空间增长很快，所以我们需要延长新生对象到老年代的代数（MaxTenuringThreshold）。 垃圾收集器 由于本应用与用户的交互性很强，所以老年代的垃圾收集器采用并发执行的CMS垃圾收集器，同时，需要选择合适的新生代垃圾收集器ParNewGC 综合以上四点设置的JVM优化参数如下： 1234567-Xms4g-Xmx4g-XX:SurvivorRatio=8-XX:MaxTenuringThreshold=15-XX:+UseParNewGC-XX:+UseConcMarkSweepGC-XX:ParallelGCThreads=4 这个时候的GC状态见图3所示： 图3 初步调优GC状态 这个时候JVM状态比没调优之前要好的多，但是还是刚刚运行就发生了几次Full GC。再根据图3GC状态进行分析： 新生代太小了。 即使有MaxTenuringThreshold参数加持，但是多少对象都熬不过两代就因为S0/S1太小了被复制到了老年代，需要适当增大新生代空间（NewSize和MaxNewSize）。 堆空间调整 增大新生代必然会挤占老年代，而且，对于刚刚运行没多久的应用已经发生了4次Full GC也说明堆空间还是不够用，因此还需要调整-Xmx参数。 此时，JVM优化参数如下： 123456789-Xms6g-Xmx6g-XX:SurvivorRatio=8-XX:MaxTenuringThreshold=15-XX:+UseParNewGC-XX:+UseConcMarkSweepGC-XX:ParallelGCThreads=4-XX:NewSize=1g-XX:MaxNewSize=1g 这个时候的GC状态见图4所示： 图4 二次优化后GC状态图 从图中不难发现Minor GC次数从97减少到了31次，明显少了很多，而且比较好使的MinorGC基本上都发生在程序启动阶段。再加上GC日志和其他辅助参数，用压力工具Loadrunner压测一下，JVM参数如下： 123456789101112131415161718192021-Xms6g-Xmx6g-XX:SurvivorRatio=8-XX:MaxTenuringThreshold=15-XX:+UseParNewGC-XX:+UseConcMarkSweepGC-XX:ParallelGCThreads=4-XX:NewSize=1g-XX:MaxNewSize=1g-server-Xss512k-XX:+DisableExplicitGC-verbose:gc-XX:+PrintGCDetails-XX:+PrintGCDateStamps-XX:+PrintGCApplicationConcurrentTime-XX:+PrintHeapAtGC-Xloggc:logs/gc.log-XX:+HeapDumpOnOutOfMemoryError-XX:HeapDumpPath=logs/HeapDumpOnOutOfMemoryError 图5 测试一段时间后GC状态 新生代Minor GC 499次，排除启动开始比较耗时的31次，之后的每次Minor GC耗时为：(42.896-14.809)/(499-31)≈60ms，目前单次Full GC是最耗时的，达到210.861ms，对于用户交互来说还是可以接受的。当然这不一定是最优的结果，可以持续优化下去，达到最理想的状态——没有Full GC、少量Minor GC。 总结之前看过很多JVM的知识，但是一直没有实际操作过，这个也算本人第一次优化JVM参数吧，如有不当之处欢迎指正。 参考资料 jvisualvm远程连接 jvm参数-verbose:gc和-XX:+PrintGC的区别]]></content>
       <categories>
         <category>java</category>
+        <category>jvm</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>jvm</tag>
+        <tag>GC</tag>
+        <tag>OOM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[jvisualvm远程连接Tomcat]]></title>
+    <url>%2F2019%2F09%2F20%2Fjvisualvm%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5Tomcat%2F</url>
+    <content type="text"><![CDATA[jvisualvm远程连接有两种方式：jmx和jstatd。 JMX需要在服务器上修改Tomcat的启动参数，打开$TOMCAT_HOME/bin/catalina.sh，在文件中添加如下参数： 1234567CATALINA_OPTS="$CATALINA_OPTS-Dcom.sun.management.jmxremote-Dcom.sun.management.jmxremote.port=8777-Dcom.sun.management.jmxremote.rmi.port=8777-Dcom.sun.management.jmxremote.authenticate=false-Dcom.sun.management.jmxremote.ssl=false-Djava.rmi.server.hostname=192.168.1.110" 其中，192.168.1.110是部署Tomcat的服务器地址。然后我们在本地启动jvisualvm，右击导航栏的“远程”-&gt;”添加远程主机”，输入远程主机IP——以“192.168.1.110”为例，右击远程主机“192.168.1.110”-&gt;“添加JMX连接”，输入端口号8777，勾选不要求SSL连接，这里没有使用安全凭证，因此也不需要勾选安全凭证，点击“确定”进行连接。 注意：使用CATALINA_OPTS，而不要使用JAVA_OPTS，使用JAVA_OPTS在关闭Tomcat时会出现如下错误导致Tomcat无法关闭： 1Error: JMX connector server communication error: service:jmx:rmi://localhost.localdomain:8777 然而，如果JMX没有缺点也就不需要使用第二种方法了。JMX无法使用VisualGC插件，这个真的无法忍受，只能用下面这种方法进行连接。 jstatdjstatd需要JDK1.8，低版本的可能没有这个工具。运行jstatd命令需要开放权限，创建安全策略文件如下： 123cd $TOMCAT_HOME/touch jstatd.all.policyvim jstatd.all.policy 添加如下内容： grant codebase &quot;file:${java.home}/../lib/tools.jar&quot; { permission java.security.AllPermission; };运行jstatd工具： 1jstatd -J-Djava.security.policy=jstatd.all.policy -J-Djava.rmi.server.hostname=192.168.1.110 &amp; 以上默认端口是1099，若需要修改可以添加-p参数进行制定。 好了，可以本地打开jvisualvm远程连接一下192.168.1.110，VisualGC可以正常使用，神奇的是CPU监控显示“不受此JVM支持”（手动愣住(°ー°〃)），这就是为什么会有两种方法同时存在？！！！]]></content>
+      <categories>
+        <category>java</category>
+        <category>jvm</category>
       </categories>
       <tags>
         <tag>java</tag>
@@ -228,9 +244,9 @@
         <category>hexo</category>
       </categories>
       <tags>
-        <tag>hexo</tag>
         <tag>PicGo</tag>
         <tag>图床</tag>
+        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -297,8 +313,8 @@
         <category>SpringBoot</category>
       </categories>
       <tags>
-        <tag>spring</tag>
         <tag>java</tag>
+        <tag>spring</tag>
         <tag>SpringBoot</tag>
         <tag>@Value</tag>
         <tag>properties</tag>
@@ -321,6 +337,11 @@
       </tags>
   </entry>
   <entry>
+    <title><![CDATA[标签]]></title>
+    <url>%2Ftags%2Findex.html</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
     <title><![CDATA[分类]]></title>
     <url>%2Fcategories%2Findex.html</url>
     <content type="text"></content>
@@ -329,10 +350,5 @@
     <title></title>
     <url>%2Fabout%2Findex.html</url>
     <content type="text"><![CDATA[联系方式： QQ：549373335 网易：zengguang05@163.com Gmail：zengguang05@gmail.com]]></content>
-  </entry>
-  <entry>
-    <title><![CDATA[标签]]></title>
-    <url>%2Ftags%2Findex.html</url>
-    <content type="text"></content>
   </entry>
 </search>
